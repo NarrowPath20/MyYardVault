@@ -7,11 +7,15 @@ The supplied `index (81).html` has been separated into a lightweight JavaScript 
 ## Deploy to GitHub Pages
 
 1. Push this repository to GitHub using the `master` or `main` branch.
-2. In the repository's **Settings → Pages**, set **Source** to **GitHub Actions**.
+2. Open [Settings → Pages](https://github.com/NarrowPath20/MyYardVault/settings/pages). Under **Build and deployment**, set **Source** to **GitHub Actions**. This repository requires that setting; deploying from a branch renders the README instead of building the application.
 3. Open **Actions → Deploy GitHub Pages** and run the workflow, or push another commit. The workflow tests, builds, and deploys the website.
 4. Once deployment succeeds, visit [the published website](https://narrowpath20.github.io/MyYardVault/).
 
 The workflow in `.github/workflows/pages.yml` builds the application into `dist/` and uploads that folder. The homepage is rendered from `src/views/pages/home.html` with the shared layout, header, and footer. The README stays repository documentation.
+
+### If Pages still displays the README
+
+The **pages build and deployment** workflow is GitHub's automatic branch/Jekyll deployment. When it runs alongside **Deploy GitHub Pages**, it can overwrite the built website with the README even though both runs succeed. Changing the Pages **Source** to **GitHub Actions** disables that competing branch deployment. Then open [Deploy GitHub Pages](https://github.com/NarrowPath20/MyYardVault/actions/workflows/pages.yml), choose **Run workflow** on `master`, and wait for it to finish before refreshing the website. The website workflow checks the Pages source and reports this configuration error before deploying.
 
 The build uses the configured Pages base path (`/MyYardVault/` for this repository), so links, images, styles, and JavaScript resolve under the published URL. Each page has its own directory and `index.html`, supporting direct links and refreshes. Only public assets and browser modules are published; server code, credentials, and saved leads are excluded.
 
