@@ -22,20 +22,23 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
       - name: Configure Pages
         id: pages
         uses: actions/configure-pages@v5
-      - run: npm test
-      - name: Build static website
-        run: npm run build
-        env:
-          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+      - name: Prepare README-only site
+        run: |
+          mkdir -p pages-source
+          printf '%s\n' '---' 'layout: default' 'title: My Yard Vault 4 Corners' '---' > pages-source/index.md
+          cat README.md >> pages-source/index.md
+          printf '%s\n' 'theme: jekyll-theme-primer' > pages-source/_config.yml
+      - name: Render README
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: pages-source
+          destination: pages-site
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: pages-site
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

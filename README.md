@@ -1,31 +1,16 @@
 # My Yard Vault 4 Corners website
 
-The supplied `index (81).html` has been separated into a lightweight JavaScript MVC application. It uses Node.js built-in modules, with no npm dependencies. Run the Node server locally or build static pages for GitHub Pages.
+The supplied `index (81).html` has been separated into a lightweight JavaScript MVC application. It uses Node.js built-in modules, with no npm dependencies. Run the Node server locally; GitHub Pages hosts only this README.
 
-## Deploy to GitHub Pages
+## GitHub Pages: README only
+
+GitHub Pages publishes this README as the site's homepage. The website application, assets, forms, and backend are not deployed to Pages.
 
 1. Push this repository to GitHub using the `master` or `main` branch.
 2. In the repository's **Settings → Pages**, set **Source** to **GitHub Actions**.
-3. Open **Actions → Deploy GitHub Pages** and run the workflow, or push another commit. The workflow tests, builds, and deploys the site. Its deployment link shows the published URL.
+3. Open **Actions → Deploy GitHub Pages** and run the workflow, or push another commit. Its deployment link shows the published README.
 
-The workflow in `.github/workflows/pages.yml` uses the configured Pages base path, so navigation, images, and JavaScript work at repository URLs such as `https://USERNAME.github.io/MyYardVault/`, user sites, and custom domains. Each page has its own directory and `index.html`, supporting direct links and refreshes. If you use a different branch, update the workflow's branch list.
-
-To build manually with Node.js 22.9 or newer:
-
-```sh
-npm run build
-```
-
-This creates the static site in `dist/` with root-relative URLs. For a repository URL, set the base path before building (PowerShell):
-
-```powershell
-$env:PAGES_BASE_PATH = '/MyYardVault/'
-npm.cmd run build
-```
-
-Serve `dist/` over HTTP to preview it; when using a repository base path, mount that folder at the same URL prefix. Generated output is ignored by Git. Only public assets and browser modules are published; server code, credentials, and saved leads are excluded.
-
-GitHub Pages cannot run the Node lead API or Twilio notifications. Forms and chat lead capture show a message directing visitors to phone or email when submitting on the static site. Product navigation, galleries, estimates, and local chat answers still work. Use the Node server when online lead submissions are required.
+The workflow in `.github/workflows/pages.yml` copies only `README.md` into a separate staging folder and renders it with Jekyll. It uploads only that rendered documentation site. Run the application locally using the instructions below.
 
 ## Run locally
 
@@ -69,7 +54,7 @@ The header uses the same hamburger menu on every screen. Its markup lives in `sr
 | Startup | `public/app.js` | Initializes shared controls and loads controllers for the current page |
 | Server | `server.js` | Serves the assembled view, browser modules, and public assets |
 
-The server page controller renders `layout.html` with only the requested page. Each page shares the header, nested navigation, chat, and footer. Product pages cannot be reached by scrolling through another page: links trigger ordinary browser navigation, support opening new tabs, and work without JavaScript. Browser controllers import data from models and load page-specific interactions only where needed. Use the Node server or the static build to run the site over HTTP rather than opening HTML files directly.
+The server page controller renders `layout.html` with only the requested page. Each page shares the header, nested navigation, chat, and footer. Product pages cannot be reached by scrolling through another page: links trigger ordinary browser navigation, support opening new tabs, and work without JavaScript. Browser controllers import data from models and load page-specific interactions only where needed. Use the Node server to run the site over HTTP rather than opening HTML files directly.
 
 | URL | Page |
 | --- | --- |
@@ -87,6 +72,6 @@ The server page controller renders `layout.html` with only the requested page. E
 
 Page URLs and metadata live in `src/models/pages.js`. Old bookmarks such as `/#storage` redirect to the new URL. Quote links use `/contact?panel=quote`; financing links use `/contact?panel=financing`. Homepage coverage and FAQ remain informational sections of the homepage. Product-page anchors such as `/storage#st-sizes` stay within their own page.
 
-Forms and chat lead capture submit to a shared backend API. Leads are saved privately before any Twilio notification; live SMS is disabled by default and requires explicit account configuration. See [Twilio setup and lead workflow](docs/TWILIO_SETUP.md) for local testing, account activation, delivery callbacks, and reviewing saved requests. The current store uses local files; the adapter can be replaced with the client's database or CRM for deployment.
+Forms and chat lead capture submit to a shared backend API. Leads are saved privately before any Twilio notification; live SMS is disabled by default and requires explicit account configuration. See [Twilio setup and lead workflow](https://github.com/NarrowPath20/MyYardVault/blob/HEAD/docs/TWILIO_SETUP.md) for local testing, account activation, delivery callbacks, and reviewing saved requests. The current store uses local files; the adapter can be replaced with the client's database or CRM for deployment.
 
 The source file in Downloads is untouched. Fonts and Three.js still use the original external providers. Chat answers use the local knowledge base. Existing placeholder content and agent-portal behavior remain as supplied.
