@@ -1,0 +1,216 @@
+﻿import {spawn} from 'node:child_process';
+import {mkdtemp, rm, mkdir, writeFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {createAppServer} from '../server.js';
+import {PAGES} from '../src/models/pages.js';
+import {leadConfig} from '../src/server/lead-config.js';
+import {LeadStore} from '../src/server/lead-store.js';
+
+const executable = process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const profile = await mkdtemp(join(tmpdir(), 'yardvault-browser-'));
+const leadConfiguration = leadConfig({LEAD_DATA_DIR:join(profile, 'test-leads')});
+const leadStore = new LeadStore(leadConfiguration.directory);
+const server = createAppServer({leadOptions:{config:leadConfiguration,store:leadStore,fetchImpl:()=>{throw Error('Browser checks must not send SMS.');}}});
+await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+const base = `http://127.0.0.1:${server.address().port}`;
+let browser, socket;
+try {
+  browser = spawn(executable, ['--headless=new', '--disable-gpu', '--no-first-run',
+    '--no-default-browser-check', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'],
+    {windowsHide: true, stdio: ['ignore', 'ignore', 'pipe']});
+  const endpoint = await new Promise((resolve, reject) => {
+    let output = '';
+    const timeout = setTimeout(() => reject(Error('Browser startup timed out')), 15000);
+    browser.once('error', reject);
+    browser.stderr.on('data', data => {
+      output += data;
+      const match = output.match(/DevTools listening on (ws:\/\/[^\s]+)/);
+      if (match) {clearTimeout(timeout); resolve(match[1]);}
+    });
+  });
+  const targets = await (await fetch(endpoint.replace(/^ws:/, 'http:').replace(/\/devtools\/browser\/.*/, '/json/list'))).json();
+  socket = new WebSocket(targets.find(target => target.type === 'page').webSocketDebuggerUrl);
+  await new Promise(resolve => socket.addEventListener('open', resolve, {once: true}));
+  let nextId = 0;
+  const pending = new Map(), errors = [], checks = [];
+  socket.addEventListener('message', event => {
+    const message = JSON.parse(event.data);
+    if (message.id) {const call = pending.get(message.id); pending.delete(message.id); message.error ? call.reject(message.error) : call.resolve(message.result);}
+    if (message.method === 'Runtime.exceptionThrown') errors.push(message.params.exceptionDetails);
+  });
+  const send = (method, params = {}) => new Promise((resolve, reject) => {
+    const id = ++nextId; pending.set(id, {resolve, reject}); socket.send(JSON.stringify({id, method, params}));
+  });
+  const evaluate = async expression => {
+    const result = await send('Runtime.evaluate', {expression, awaitPromise: true, returnByValue: true});
+    if (result.exceptionDetails) throw Error(JSON.stringify(result.exceptionDetails));
+    return result.result.value;
+  };
+  const check = async (name, expression) => {
+    if (!await evaluate(expression)) throw Error(name);
+    checks.push(name);
+  };
+  const ready = async path => {
+    for (let i=0;i<100;i++) {
+      let loaded=false;
+      try { loaded=await evaluate(`location.pathname===${JSON.stringify(path)} && document.documentElement.dataset.appReady==='true'`); }
+      catch (error) {if(!/context|Cannot find/i.test(JSON.stringify(error)))throw error;}
+      if(loaded)return;
+      if(errors.length)throw Error(JSON.stringify(errors));
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    throw Error('Initialization timed out: '+path);
+  };
+  const navigate = async path => {
+    await send('Page.navigate',{url:base+path});
+    await ready(new URL(base+path).pathname);
+  };
+  const screenshot = async name => {
+    await new Promise(resolve=>setTimeout(resolve,200));
+    const result=await send('Page.captureScreenshot',{format:'png'});
+    await writeFile(`out/responsive/${name}.png`,Buffer.from(result.data,'base64'));
+  };
+  await send('Runtime.enable');
+  await send('Page.enable');
+  await send('Emulation.setDeviceMetricsOverride', {width:1440,height:900,deviceScaleFactor:1,mobile:false});
+  await navigate('/');
+  await check('homepage contains only its own page', "document.querySelectorAll('main > div[id$=\"-view\"]').length===1 && !!document.getElementById('home-view') && !document.getElementById('storage-view') && !document.getElementById('start')");
+  await check('home finishes initialize', "document.querySelectorAll('#swatches button').length===9");
+  await evaluate("document.getElementById('burger').click()");
+  await check('submenus start collapsed', "document.getElementById('menu-products').hidden && document.getElementById('menu-solutions').hidden");
+  await evaluate("document.querySelector('[aria-controls=\"menu-products\"]').click();document.querySelector('[aria-controls=\"menu-solutions\"]').click()");
+  await check('products and solutions expand independently', "!document.getElementById('menu-products').hidden && !document.getElementById('menu-solutions').hidden");
+  await evaluate("document.querySelector('#menu-products [data-view=\"office\"]').click()");
+  await ready('/office');
+  await check('submenu performs native page navigation', "!!document.getElementById('office-view') && !document.getElementById('home-view') && !document.body.classList.contains('menu-open')");
+  await evaluate("document.querySelectorAll('#ofUcTabs .of-uc-tab')[1].click()");
+  await check('office use cases work', "document.getElementById('ofUcTitle').textContent.includes('Medical')");
+  const history=await send('Page.getNavigationHistory');
+  await send('Page.navigateToHistoryEntry',{entryId:history.entries[history.currentIndex-1].id});
+  await ready('/');
+  checks.push('browser Back returns to homepage');
+  await evaluate("document.querySelector('.use-card[data-view=\"kiosk\"]').click()");
+  await ready('/kiosk');
+  checks.push('product summary opens its own page');
+  await evaluate("document.querySelector('header .brand').click()");
+  await ready('/');
+  checks.push('logo navigates home');
+  for(const [key,page] of Object.entries(PAGES)) {
+    await navigate(page.path);
+    await check(key+' is isolated at its direct URL', `document.body.dataset.page===${JSON.stringify(key)} && document.querySelectorAll('main > div[id$="-view"]').length===1 && !!document.getElementById(${JSON.stringify(key+'-view')})`);
+    await evaluate("document.documentElement.style.scrollBehavior='auto';scrollTo(0,document.documentElement.scrollHeight)");
+    await check(key+' scroll stays on the current page', `location.pathname===${JSON.stringify(page.path)} && document.querySelectorAll('main > div[id$="-view"]').length===1 && !!document.querySelector('footer')`);
+  }
+  await navigate('/sizes');
+  await evaluate("document.querySelector('#sizeTabs button[data-k=\"19\"]').click()");
+  await new Promise(resolve=>setTimeout(resolve,400));
+  await check('size selector price and image', "document.getElementById('sizePrice').textContent==='$8,100' && document.getElementById('sizeImg').naturalWidth>0");
+  await navigate('/storage');
+  await evaluate("document.querySelector('a[href=\"#st-sizes\"]').click()");
+  await check('storage size link stays within storage', "location.pathname==='/storage' && !!document.getElementById('st-sizes') && !document.getElementById('sizes-view')");
+  await evaluate("document.querySelector('[data-go-fin]').click()");
+  await ready('/contact');
+  await check('financing CTA opens correct contact panel', "!document.getElementById('panel-financing').hidden && document.getElementById('panel-showroom').hidden");
+  await evaluate("const range=document.getElementById('estRange');range.value=9600;range.dispatchEvent(new Event('input'))");
+  await check('payment estimator works on contact page', "document.getElementById('estPrice').textContent==='$9,600'");
+  await evaluate("document.querySelector('header [data-open=\"quote\"]').click()");
+  await new Promise(resolve=>setTimeout(resolve,200));
+  await ready('/contact');
+  await check('quote CTA opens correct panel', "!document.getElementById('panel-quote').hidden && document.getElementById('panel-financing').hidden");
+  await evaluate(`window.__leadReceipts=[];const originalFetch=window.fetch;window.fetch=async(...args)=>{
+    const response=await originalFetch(...args);
+    if(args[0]==='/api/leads')window.__leadReceipts.push(await response.clone().json());
+    return response;
+  };document.getElementById('qName').value='Browser Test';document.getElementById('qPhone').value='';document.getElementById('qEmail').value='';document.getElementById('quoteForm').requestSubmit();`);
+  await new Promise(resolve=>setTimeout(resolve,150));
+  await check('form shows backend validation errors', "document.querySelector('#quoteForm .lead-status').textContent.includes('phone number or email')");
+  await evaluate("document.getElementById('qEmail').value='browser@example.com';document.getElementById('quoteForm').requestSubmit()");
+  await new Promise(resolve=>setTimeout(resolve,200));
+  await check('quote form submits directly without email-client handoff', "document.querySelector('#quoteForm .lead-status').textContent.includes('has been received') && !document.querySelector('#quoteForm button[type=\"submit\"]').disabled");
+  let reference=await evaluate('window.__leadReceipts.at(-1).reference');
+  if((await leadStore.read(reference)).lead.type!=='quote')throw Error('Quote was not persisted');
+  await evaluate("document.getElementById('quoteForm').requestSubmit()");
+  await new Promise(resolve=>setTimeout(resolve,200));
+  await check('form retry reuses reference', 'window.__leadReceipts.at(-1).reference===window.__leadReceipts.at(-2).reference');
+  await evaluate("window.__selectPanel('showroom');document.getElementById('vName').value='Browser Test';document.getElementById('vPhone').value='5055550100';document.getElementById('showroomForm').requestSubmit()");
+  await new Promise(resolve=>setTimeout(resolve,200));
+  await check('showroom form submits', "document.querySelector('#showroomForm .lead-status').textContent.includes('has been received')");
+  await evaluate("window.__selectPanel('financing');document.getElementById('fName').value='Browser Test';document.getElementById('fPhone').value='5055550100';document.getElementById('finForm').requestSubmit()");
+  await new Promise(resolve=>setTimeout(resolve,200));
+  await check('financing inquiry submits', "document.querySelector('#finForm .lead-status').textContent.includes('has been received')");
+  await evaluate("document.getElementById('yvChatFab').click();document.getElementById('ycInput').value='sizes';document.getElementById('ycForm').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))");
+  await new Promise(resolve=>setTimeout(resolve,1500));
+  await check('shared chat works on separate pages', "document.getElementById('ycMsgs').textContent.includes('Seven sizes')");
+  const chatMessage=async text=>{
+    await evaluate(`document.getElementById('ycInput').value=${JSON.stringify(text)};document.getElementById('ycForm').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))`);
+    await new Promise(resolve=>setTimeout(resolve,1300));
+  };
+  await chatMessage('human');
+  await evaluate("[...document.querySelectorAll('.yc-chips button')].find(b=>b.textContent.includes('someone reach out')).click()");
+  await new Promise(resolve=>setTimeout(resolve,1300));
+  for(const answer of ['Storage unit','Browser Chat Test','5055550100','chat@example.com','Gallup, NM'])await chatMessage(answer);
+  await new Promise(resolve=>setTimeout(resolve,1300));
+  await evaluate("[...document.querySelectorAll('.yc-chips button')].find(b=>b.textContent==='Send request').click()");
+  await new Promise(resolve=>setTimeout(resolve,1500));
+  await check('chat submits a lead and confirms actual acceptance', "document.getElementById('ycMsgs').textContent.includes('Your request has been received')");
+  reference=await evaluate('window.__leadReceipts.at(-1).reference');
+  if((await leadStore.read(reference)).lead.type!=='chat')throw Error('Chat lead was not persisted');
+  await navigate('/gallery');
+  await evaluate("document.querySelector('#galGrid figure').click()");
+  await check('gallery lightbox opens', "document.getElementById('lightbox').classList.contains('open')");
+  await evaluate("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");
+  await check('gallery lightbox closes', "!document.getElementById('lightbox').classList.contains('open')");
+  await send('Page.navigate',{url:base+'/#storage'});
+  await ready('/storage');
+  checks.push('legacy hash bookmark redirects to real storage URL');
+  await send('Page.reload');
+  await new Promise(resolve=>setTimeout(resolve,200));
+  await ready('/storage');
+  checks.push('product URL survives reload');
+  if(process.argv.includes('--responsive')) {
+    await mkdir('out/responsive',{recursive:true});
+    const dimensions=[[280,320],[320,568],[390,844],[540,720],[768,1024],[844,390],[1024,600],[1440,900],[2560,1080]];
+    for(const [width,height] of dimensions) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:width<1024});
+      for(const [key,page] of Object.entries(PAGES)) {
+        await navigate(page.path);
+        const audit=await evaluate(`(()=>{
+          document.documentElement.style.scrollBehavior='auto';
+          document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+          const failures=[],root=document.getElementById('main-content'),menu=document.getElementById('mmenu');
+          if(getComputedStyle(menu).visibility!=='hidden'||!menu.inert)failures.push('closed navigation visible');
+          for(const el of [...root.querySelectorAll('h1,h2,h3,p,a,button,input,select,textarea'),...document.querySelectorAll('footer a,footer p')]) {
+            const rect=el.getBoundingClientRect(),style=getComputedStyle(el);
+            if(!rect.width||!rect.height||style.visibility==='hidden')continue;
+            let scroller=false;
+            for(let p=el.parentElement;p&&p!==root;p=p.parentElement)if(['auto','scroll'].includes(getComputedStyle(p).overflowX)){scroller=true;break;}
+            if(!scroller&&(rect.left < -1||rect.right>innerWidth+1))failures.push(el.tagName+'.'+el.className+' outside viewport');
+            if(!scroller&&el.clientWidth>0&&style.display!=='inline'&&el.scrollWidth>el.clientWidth+2)failures.push(el.tagName+'.'+el.className+' clips content');
+          }
+          document.getElementById('burger').click();
+          menu.querySelectorAll('.menu-toggle').forEach(el=>el.click());menu.scrollTop=menu.scrollHeight;
+          const last=menu.querySelector('.btn').getBoundingClientRect();
+          if(last.bottom>innerHeight+1||last.top<68)failures.push('menu action unreachable');
+          if(getComputedStyle(document.getElementById('yvChatFab')).display!=='none')failures.push('chat covers menu');
+          document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}));
+          if(document.body.classList.contains('menu-open'))failures.push('Escape does not close menu');
+          return [...new Set(failures)];
+        })()`);
+        if(audit.length)errors.push({viewport:`${width}x${height}`,page:key,failures:audit});
+        if([390,844,1440].includes(width)&&['home','storage','contact','gallery'].includes(key)) {
+          await evaluate('scrollTo(0,0)');await screenshot(`${key}-${width}x${height}`);
+        }
+      }
+      console.log(`${width}x${height}: checked all ${Object.keys(PAGES).length} independent pages`);
+    }
+  }
+  if(errors.length)throw Error(JSON.stringify(errors));
+  console.log(`PASS: ${checks.length} browser checks; no JavaScript exceptions.`);
+  console.log(checks.join(', '));
+} finally {
+  socket?.close();
+  if(browser&&browser.exitCode===null){const stopped=new Promise(resolve=>browser.once('exit',resolve));browser.kill();await stopped;}
+  await new Promise(resolve=>server.close(resolve));
+  await rm(profile,{recursive:true,force:true,maxRetries:5,retryDelay:300});
+}

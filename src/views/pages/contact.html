@@ -1,0 +1,142 @@
+<div id="contact-view">
+<section class="sec start" id="start">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Get started</span>
+      <h1>Let's get you a vault.</h1>
+      <p class="lead">Pick what you need and we'll take it from there.</p>
+    </div>
+    <div class="start-switch reveal">
+      <button class="opt active" data-panel="showroom" type="button">
+        <svg class="oi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 13h11V6H3z"/><path d="M14 9h4l3 3v1h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg>
+        <b>Mobile showroom</b><small>See it in your driveway</small></button>
+      <button class="opt" data-panel="quote" type="button">
+        <svg class="oi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.6 11.4 12 2.8H3v9l8.6 8.6a2 2 0 0 0 2.8 0l6.2-6.2a2 2 0 0 0 0-2.8z"/><circle cx="7.5" cy="7.5" r="1.3"/></svg>
+        <b>Get a quote</b><small>Price your build</small></button>
+      <button class="opt" data-panel="financing" type="button">
+        <svg class="oi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        <b>Financing</b><small>Own it monthly</small></button>
+    </div>
+
+    <!-- SHOWROOM -->
+    <div class="panel" id="panel-showroom">
+      <div class="start-grid">
+        <div class="start-left">
+          <figure class="start-media">
+            <img src="/assets/images/a533f66040baf56c.webp" alt="Yard Vault mobile showroom delivered on a trailer to a Four Corners home">
+            <figcaption>Our mobile showroom &middot; delivered to your driveway</figcaption>
+          </figure>
+          <div class="start-steps">
+            <div class="ministep"><span class="sn">1</span><div><b>Pick a day &amp; time</b><p>Anywhere in the Four Corners — mornings through evenings.</p></div></div>
+            <div class="ministep"><span class="sn">2</span><div><b>We roll a real vault to you</b><p>See it, open it, measure your space. Zero pressure.</p></div></div>
+            <div class="ministep"><span class="sn">3</span><div><b>Decide &amp; build</b><p>Pick your size and finish; we build it on your land in about an hour.</p></div></div>
+          </div>
+        </div>
+        <form class="quote" id="showroomForm">
+          <div class="lead-trap" aria-hidden="true"><label for="showroomFormWebsite">Leave this blank</label><input id="showroomFormWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+          <h3 style="font-size:22px;margin-bottom:20px">Book your visit</h3>
+          <div class="fld-row">
+            <div class="fld"><label for="vName">Name</label><input type="text" id="vName" placeholder="Your name" required></div>
+            <div class="fld"><label for="vPhone">Phone</label><input type="tel" id="vPhone" placeholder="(505) 000-0000" required></div>
+          </div>
+          <div class="fld-row">
+            <div class="fld"><label for="sDate">Preferred date</label><input type="date" id="sDate"></div>
+            <div class="fld"><label for="vZip">City or ZIP</label><input type="text" id="vZip" placeholder="Where should we come?"></div>
+          </div>
+          <div class="fld"><label>Time of day</label>
+            <div class="slots" id="slots">
+              <button type="button" class="slot active" data-v="Morning (8-11am)">Morning</button>
+              <button type="button" class="slot" data-v="Midday (11am-2pm)">Midday</button>
+              <button type="button" class="slot" data-v="Afternoon (2-5pm)">Afternoon</button>
+              <button type="button" class="slot" data-v="Evening (5-7pm)">Evening</button>
+            </div>
+          </div>
+          <div class="fld"><label for="vSize">Unit you want to see</label><select id="vSize">
+            <option>Storage vault</option><option>Kiosk unit</option><option>Office unit</option><option>Multi-compartment</option><option>Not sure — show me options</option></select></div>
+          <button type="submit" class="btn btn-primary">Request my visit
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <p class="form-note">We confirm your slot by phone &middot; serving the Four Corners</p>
+          <p class="lead-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- QUOTE -->
+    <div class="panel" id="panel-quote" hidden>
+      <div class="start-grid">
+        <div class="start-left">
+          <h3 style="font-size:26px;margin-bottom:14px">A price, usually same day.</h3>
+          <p style="color:var(--mist)">Tell us the size and finish you're after and we'll send a quote — no obligation. Not sure yet? Say so and we'll help you figure it out, or switch over and book a showroom visit instead.</p>
+          <div class="start-contact" style="margin-top:28px">
+            <a href="tel:15176982858"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.5-1.2a2 2 0 0 1 2.1-.4c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2z"/></svg> 1-517-MY-VAULT</a>
+            <a href="mailto:info@myyardvault.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg> info@myyardvault.com</a>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> the Four Corners &amp; Southwest</span>
+          </div>
+        </div>
+        <form class="quote" id="quoteForm">
+          <div class="lead-trap" aria-hidden="true"><label for="quoteFormWebsite">Leave this blank</label><input id="quoteFormWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+          <h3 style="font-size:22px;margin-bottom:20px">Get your quote</h3>
+          <div class="fld-row">
+            <div class="fld"><label for="qName">Name</label><input type="text" id="qName" placeholder="Your name" required></div>
+            <div class="fld"><label for="qPhone">Phone</label><input type="tel" id="qPhone" placeholder="(505) 000-0000"></div>
+          </div>
+          <div class="fld"><label for="qEmail">Email</label><input type="email" id="qEmail" placeholder="you@email.com"></div>
+          <div class="fld-row">
+            <div class="fld"><label for="qSize">Size</label><select id="qSize">
+              <option>3.5&prime; Vault</option><option>5&prime; Vault</option><option>7&prime; Vault</option>
+              <option selected>10&prime; Vault</option><option>13&prime; Vault</option><option>16&prime; Vault</option>
+              <option>19&prime; Vault</option><option>Kiosk unit</option><option>Office unit</option><option>Multi-compartment</option>
+              <option>Not sure yet</option></select></div>
+            <div class="fld"><label for="qColor">Finish</label><select id="qColor">
+              <option>Galvanized</option><option>Slate grey</option><option>Jet black</option><option>Traffic red</option>
+              <option>Gentian blue</option><option>Moss green</option><option>Signal yellow</option><option>Oyster white</option>
+              <option>Yard Vault violet</option></select></div>
+          </div>
+          <div class="fld"><label for="qMsg">Anything else?</label><textarea id="qMsg" placeholder="Your yard, access, and what's going inside…"></textarea></div>
+          <button type="submit" class="btn btn-primary">Send my quote request
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <p class="form-note">Provide a phone number or email so we can respond &middot; or call 1-517-MY-VAULT</p>
+          <p class="lead-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- FINANCING -->
+    <div class="panel" id="panel-financing" hidden>
+      <div class="fin-block">
+        <h3 style="font-size:clamp(26px,3.4vw,40px)">Own it in months, not years.</h3>
+        <p>Flexible financing through our partners — including lease-to-own and no-credit-needed options. Apply in minutes and start building.</p>
+        <div class="fin-logos2">
+          <div class="fl"><b>Synchrony</b><span>Financing &amp; credit</span></div>
+          <div class="fl"><b>Acima</b><span>Lease-to-own &middot; no credit needed</span></div>
+        </div>
+        <div class="est" id="finEst">
+          <div class="est-top"><label>Estimated project total</label><span class="est-price" id="estPrice">$6,500</span></div>
+          <input type="range" id="estRange" min="1500" max="20000" step="100" value="6500" aria-label="Estimated project total">
+          <div class="est-terms" id="estTerms" role="group" aria-label="Payment term">
+            <button type="button" data-m="12">12 mo</button>
+            <button type="button" data-m="24" class="active">24 mo</button>
+            <button type="button" data-m="36">36 mo</button>
+            <button type="button" data-m="48">48 mo</button>
+          </div>
+          <div class="est-out"><b id="estMo">$271</b><span>/ month &middot; <span id="estTermLbl">24</span> months</span></div>
+          <p class="est-fine">Simple estimate: total &divide; months. Your actual rate, term, and approval are set by Synchrony or Acima &mdash; this is a ballpark, not an offer.</p>
+        </div>
+        <form class="finform" id="finForm">
+          <div class="lead-trap" aria-hidden="true"><label for="finFormWebsite">Leave this blank</label><input id="finFormWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+          <div class="fld-row">
+            <div class="fld"><label for="fName">Name</label><input type="text" id="fName" placeholder="Your name" required></div>
+            <div class="fld"><label for="fPhone">Phone</label><input type="tel" id="fPhone" placeholder="(505) 000-0000" required></div>
+          </div>
+          <div class="fld"><label for="fType">Which option?</label><select id="fType">
+            <option>Synchrony — financing &amp; credit</option><option>Acima — lease-to-own, no credit</option><option>Not sure — help me choose</option></select></div>
+          <button type="submit" class="btn btn-primary">Request financing information
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <p class="form-note">We'll reach out to walk you through approval &middot; serving the Four Corners</p>
+          <p class="lead-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
