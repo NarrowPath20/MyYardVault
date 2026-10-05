@@ -5,6 +5,7 @@ import {initAgentPortal} from '/controllers/agent-portal-controller.js';
 import {initPaymentEstimator} from '/controllers/payment-estimator-controller.js';
 import {initChat} from '/controllers/chat-controller.js';
 import {LEGACY_PATHS} from '/models/pages.js';
+import {initLightbox} from '/controllers/lightbox-controller.js';
 
 const legacy = LEGACY_PATHS[location.hash.slice(1)];
 if (location.pathname === '/' && legacy && legacy !== '/') {
@@ -18,6 +19,7 @@ if (location.pathname === '/' && legacy && legacy !== '/') {
   initAgentPortal();
   initPaymentEstimator();
   initChat();
+  initLightbox();
 
   const initialize = async (module, name) => (await import(`/controllers/${module}-controller.js`))[name]();
   if (page === 'home') {
@@ -36,7 +38,6 @@ if (location.pathname === '/' && legacy && legacy !== '/') {
     await initialize('build-walkthrough', 'initBuildWalkthrough');
   } else if (page === 'gallery') {
     await initialize('gallery-filter', 'initGalleryFilter');
-    await initialize('lightbox', 'initLightbox');
   } else if (page === 'contact') {
     await initialize('lead-forms', 'initLeadForms');
   }

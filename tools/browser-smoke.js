@@ -92,6 +92,15 @@ try {
   await send('Emulation.setDeviceMetricsOverride', {width:1440,height:900,deviceScaleFactor:1,mobile:false});
   await check('homepage contains only its own page', "document.querySelectorAll('main > div[id$=\"-view\"]').length===1 && !!document.getElementById('home-view') && !document.getElementById('storage-view') && !document.getElementById('start')");
   await check('home finishes initialize', "document.querySelectorAll('#swatches button').length===9");
+  await evaluate("document.querySelector('.use-card img').focus(); document.querySelector('.use-card img').click()");
+  await check('linked homepage image opens focused viewer without navigating', "location.pathname==='/' && document.getElementById('lightbox').classList.contains('open') && document.querySelector('.lb-img').src===document.querySelector('.use-card img').src && document.activeElement.matches('.lb-close') && document.getElementById('main-content').inert");
+  await check('focused image has an eighty percent black backdrop', "getComputedStyle(document.getElementById('lightbox')).backgroundColor==='rgba(0, 0, 0, 0.8)'");
+  await evaluate("window.__focusedImage=document.querySelector('.lb-img').src; document.querySelector('.lb-next').click()");
+  await check('next image control advances', "document.querySelector('.lb-img').src!==window.__focusedImage");
+  await evaluate("document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft'}))");
+  await check('left arrow returns to previous image', "document.querySelector('.lb-img').src===window.__focusedImage");
+  await evaluate("document.querySelector('.lb-close').click()");
+  await check('close restores homepage interaction and image focus', "!document.getElementById('lightbox').classList.contains('open') && !document.getElementById('main-content').inert && document.activeElement===document.querySelector('.use-card img') && document.body.style.overflow!== 'hidden'");
   await evaluate("document.getElementById('burger').click()");
   await check('submenus start collapsed', "document.getElementById('menu-products').hidden && document.getElementById('menu-solutions').hidden");
   await evaluate("document.querySelector('[aria-controls=\"menu-products\"]').click();document.querySelector('[aria-controls=\"menu-solutions\"]').click()");
