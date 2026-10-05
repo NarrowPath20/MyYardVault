@@ -1,0 +1,75 @@
+/* Shared palette for both themes; legacy color tokens resolve to these roles. */
+:root {
+  color-scheme: light;
+  --background:#FFFFFF; --surface-rgb:255,255,255; --support:#F5F5F5;
+  --text:#212121; --text-rgb:33,33,33; --muted:#555555;
+  --primary:#1E88E5; --primary-rgb:30,136,229;
+  --secondary:#FF7043; --highlight:#1E88E5; --highlight-rgb:30,136,229;
+}
+:root[data-theme="dark"] {
+  color-scheme:dark;
+  --background:#2A2C31; --surface-rgb:42,44,49; --support:#353839;
+  --text:#F8F8FF; --text-rgb:248,248,255; --muted:#c4c6ce;
+  --primary:#0F52BA; --primary-rgb:15,82,186;
+  --highlight:#BB86FC; --highlight-rgb:187,134,252;
+}
+header, header.scrolled, body.menu-open header { background:rgba(var(--surface-rgb),.97); border-bottom:1px solid var(--line); }
+.mobile-menu { background:var(--background); }
+.theme-toggle { flex-shrink:0; min-width:44px; min-height:44px; padding:8px; border:1px solid var(--line2); border-radius:6px; background:var(--panel); color:var(--text); cursor:pointer; font-size:20px; line-height:1; }
+.theme-toggle:hover { border-color:var(--primary); }
+.hero h1 .glow { background:linear-gradient(120deg,var(--text),var(--highlight)); background-clip:text; -webkit-background-clip:text; }
+.btn-primary { background:var(--primary); color:#fff; }
+.btn-ghost:hover, .yc-close:hover { color:var(--text); }
+:is(#storage-view,#office-view,#kiosk-view,#multi-view,#conex-view,#accessories-view) .btn-ghost { background:var(--panel); color:var(--text); border-color:var(--line2); }
+.brand .mark path:first-child { fill:var(--primary); }
+.brand .mark path:nth-child(2) { fill:var(--secondary); }
+.brand .mark stop { stop-color:var(--primary); }
+.hero-badges b, .eyebrow { color:var(--highlight); }
+:root[data-theme="light"] :is(#vignette,#grain) { display:none; }
+:root[data-theme="light"] :is(.hero-grad,.st-hero-scrim,.of-hero-scrim,.kv-hero-scrim,.mc-hero-scrim,.cn-hero-scrim,.acc-hero-scrim) { background:linear-gradient(90deg,rgba(255,255,255,.88),rgba(255,255,255,.65) 55%,rgba(255,255,255,.12)); }
+@media(max-width:760px) { .nav-cta { gap:6px; } }
+
+:root[data-theme="light"] :is(.of-uc-scrim,.kv-bandwrap .ov,.bw-scrim,.mc-scenes .cap,.st-gal-scrim) { background:linear-gradient(180deg,transparent,rgba(255,255,255,.98) 65%); }
+:root[data-theme="light"] :is(.of-uc-scrim,.kv-bandwrap,.bw-scrim,.mc-scenes .cap,.st-gal-scrim) :is(h3,p,b,span) { text-shadow:none; }
+
+/* Keep the light theme crisp instead of using dark-theme glass and text glow. */
+:root[data-theme="light"] *,
+:root[data-theme="light"] *::before,
+:root[data-theme="light"] *::after {
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  text-shadow:none !important;
+}
+:root[data-theme="light"] :is(.st-sec,.of-sec,.kv-sec,.mc-sec,.cn-sec,.acc-sec) .wrap {
+  background:var(--background);
+}
+:root[data-theme="light"] :is(.st-views,.st-finish) { filter:none; }
+
+/* Give the comparison its own opaque surfaces and stronger type hierarchy. */
+#compare {
+  --compare-surface:#E5E9EE; --compare-header:#D5DCE5;
+  --compare-feature:#CDDFF2; --compare-text:#17191C;
+  --compare-detail:#353B43; --compare-accent:#124F85;
+}
+:root[data-theme="dark"] #compare {
+  --compare-surface:#1E2025; --compare-header:#15171C;
+  --compare-feature:#263752; --compare-text:#F8F8FF;
+  --compare-detail:#D1D5DD; --compare-accent:#D7B9FF;
+}
+#compare > .wrap {
+  background:var(--compare-surface); border:1px solid var(--line2);
+  border-radius:20px; padding:clamp(24px,4vw,48px);
+  color:var(--compare-text);
+}
+#compare :is(h2,.lead,.cmp-note) { color:var(--compare-text); }
+#compare .cmp-wrap { background:var(--compare-surface); border-color:var(--line2); }
+#compare .cmp { font-size:15.5px; }
+#compare .cmp :is(th,td) { color:var(--compare-text); }
+#compare .cmp thead th { background:var(--compare-header); font-size:16px; font-weight:700; }
+#compare .cmp td:first-child { background:var(--compare-header); font-size:12.5px; font-weight:700; }
+#compare .cmp .yv { background:var(--compare-feature); font-weight:600; }
+#compare .cmp :is(.ok,thead .yv) { color:var(--compare-accent); font-weight:700; }
+#compare .cmp .no { color:var(--compare-text); font-weight:600; }
+#compare .cmp small { color:var(--compare-detail); font-size:13.5px; font-weight:500; }
+#compare :is(.eyebrow,.cmp-note a) { color:var(--compare-accent); }
+#compare .cmp-note a { font-weight:700; text-decoration:underline; text-underline-offset:3px; }

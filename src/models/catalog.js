@@ -2,7 +2,7 @@ export const SWATCHES = [
   {name:'White aluminium', hex:'#a7acaa', metal:0.8, rough:0.4},
   {name:'Oyster white', hex:'#e3d9c6', metal:0.5, rough:0.55},
   {name:'Slate grey', hex:'#4b4e53', metal:0.72, rough:0.46},
-  {name:'Yard Vault violet', hex:'#6a2b8c', metal:0.6, rough:0.45},
+  {name:'My Yard Vault 4 Corners violet', hex:'#6a2b8c', metal:0.6, rough:0.45},
   {name:'Traffic red', hex:'#a2302a', metal:0.62, rough:0.44},
   {name:'Gentian blue', hex:'#15487c', metal:0.62, rough:0.44},
   {name:'Turquoise blue (RAL 5018)', hex:'#0f9199', metal:0.6, rough:0.44},
@@ -23,7 +23,7 @@ export const RAL = [
   {n:'White aluminium', c:'RAL 9006', h:'#a7acaa'},
   {n:'Pure white', c:'RAL 9010', h:'#f1ede1'},
   {n:'Galvanized', c:'BARE ZINC', h:'#c4cad1'},
-  {n:'Yard Vault violet', c:'CUSTOM', h:'#6a2b8c'}
+  {n:'My Yard Vault 4 Corners violet', c:'CUSTOM', h:'#6a2b8c'}
 ];
 export const SIZES = {
   '3.5': {tag:'Compact', name:'3.5&prime; Vault', img:'/assets/images/d5204f91dde4960a.webp', bg:'#000000', area:'26 sq ft', use:'Bikes, tools &amp; totes', price:'$3,199', note:'starting price', door:'End'},
@@ -45,6 +45,6 @@ export const ST_FINISHES=[
   {name:'Slate grey (RAL 7015)', hex:'#52504c'},
   {name:'Oyster white (RAL 1013)', hex:'#a7acaa'},
   {name:'Traffic red (RAL 2020)', hex:'#a2302a'},
-  {name:'Yard Vault violet', hex:'#6a2b8c'},
+  {name:'My Yard Vault 4 Corners violet', hex:'#6a2b8c'},
   {name:'Jet black (RAL 9005)', hex:'#15151a'}
 ];

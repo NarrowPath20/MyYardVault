@@ -1,4 +1,4 @@
-# Yard Vault website
+# My Yard Vault 4 Corners website
 
 The supplied `index (81).html` has been separated into a lightweight JavaScript MVC application. It uses Node.js built-in modules, with no npm dependencies or build step.
 
@@ -60,7 +60,7 @@ The server page controller renders `layout.html` with only the requested page. E
 | `/gallery` | Photo gallery |
 | `/contact` | Showroom visits, quotes, and financing |
 
-Page URLs and metadata live in `src/models/pages.js`. Old bookmarks such as `/#storage` redirect to the new URL. Quote links use `/contact?panel=quote`; financing links use `/contact?panel=financing`. Homepage reviews, coverage, and FAQ remain informational sections of the homepage. Product-page anchors such as `/storage#st-sizes` stay within their own page.
+Page URLs and metadata live in `src/models/pages.js`. Old bookmarks such as `/#storage` redirect to the new URL. Quote links use `/contact?panel=quote`; financing links use `/contact?panel=financing`. Homepage coverage and FAQ remain informational sections of the homepage. Product-page anchors such as `/storage#st-sizes` stay within their own page.
 
 Forms and chat lead capture submit to a shared backend API. Leads are saved privately before any Twilio notification; live SMS is disabled by default and requires explicit account configuration. See [Twilio setup and lead workflow](docs/TWILIO_SETUP.md) for local testing, account activation, delivery callbacks, and reviewing saved requests. The current store uses local files; the adapter can be replaced with the client's database or CRM for deployment.
 

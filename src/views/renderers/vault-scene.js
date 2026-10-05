@@ -118,6 +118,7 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const v=makeVault(bodyMat); v.group.position.x=e.x;
     v.group.userData.spin=(0.0011+i*0.00025)*((i%2)?-1:1);
     v.group.userData.phase=i*1.4;
+    v.group.userData.spinAngle=0;
     showroom.add(v.group);
     if(e.hero){ heroParts=v.parts; heroBodyMat=bodyMat; heroGroup=v.group; }
   });
@@ -280,8 +281,16 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const cV=new THREE.Color(0xb574ec), cW=new THREE.Color(0xc66a3c), rimCol=new THREE.Color(0xb574ec);
 
   let mx=0,my=0,tmx=0,tmy=0;
-  addEventListener('mousemove',e=>{tmx=(e.clientX/innerWidth-.5);tmy=(e.clientY/innerHeight-.5);});
-  addEventListener('deviceorientation',e=>{if(e.gamma!=null){tmx=clamp(e.gamma/45,-.5,.5);tmy=clamp((e.beta-40)/45,-.5,.5);}});
+  if(!REDUCED && matchMedia('(hover:hover) and (pointer:fine)').matches){
+    addEventListener('pointermove',e=>{
+      if(e.pointerType !== 'mouse') return;
+      tmx=clamp(e.clientX/innerWidth-.5,-.5,.5);
+      tmy=clamp(e.clientY/innerHeight-.5,-.5,.5);
+    },{passive:true});
+    const resetRotation=()=>{tmx=0;tmy=0;};
+    document.documentElement.addEventListener('pointerleave',resetRotation);
+    addEventListener('blur',resetRotation);
+  }
 
   let paused=false;
   document.addEventListener('visibilitychange',()=>{paused=document.hidden; if(!paused) requestAnimationFrame(loop);});
@@ -289,11 +298,13 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function resize(){ renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth<700?1.6:2)); renderer.setSize(innerWidth,innerHeight,false); camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); }
   addEventListener('resize',resize); resize();
 
-  let camX=0;
+  let camX=0, previousFrame=0;
   const _sp=new THREE.Vector3(),_bp=new THREE.Vector3(),_st=new THREE.Vector3(),_bt=new THREE.Vector3(),_camTgt=new THREE.Vector3();
   function loop(now){
     requestAnimationFrame(loop);
     if(paused) return;
+    const frameScale=previousFrame ? Math.min((now-previousFrame)/16.667,3) : 1;
+    previousFrame=now;
     const vh=innerHeight, docH=document.documentElement.scrollHeight;
     const sp=clamp(scrollY/Math.max(1,docH-vh),0,1);
     // hero exhibit assembles on load
@@ -314,7 +325,12 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(scene.fog) scene.fog.color.copy(FOG_DARK).lerp(FOG_HAZE, blend);
     mx+=(tmx-mx)*0.05; my+=(tmy-my)*0.05;
     if(!inBack){
-      showroom.children.forEach(g=>{ if(!REDUCED && !(g===heroGroup && loadAnim)) g.rotation.y+=g.userData.spin; g.position.y=Math.sin(now*0.0006+g.userData.phase)*0.04; });
+      showroom.children.forEach(g=>{
+        if(!REDUCED && !(g===heroGroup && loadAnim)) g.userData.spinAngle+=g.userData.spin*frameScale;
+        g.rotation.y=g.userData.spinAngle+(REDUCED?0:mx*0.35);
+        g.rotation.x=REDUCED?0:my*0.08;
+        g.position.y=REDUCED?0:Math.sin(now*0.0006+g.userData.phase)*0.04;
+      });
       const warmW=Math.max(0,1-Math.abs(sp-0.66)/0.16);
       rimCol.copy(cV).lerp(cW,warmW*0.85); rim.color.lerp(rimCol,0.05);
       camX += (sp*TRAVEL - camX)*0.07;
@@ -323,8 +339,9 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       for(let i=0;i<pcount;i++){ arr[i*3+1]+=0.004; if(arr[i*3+1]>7.5) arr[i*3+1]=-0.5; }
       points.geometry.attributes.position.needsUpdate=true;
     } else { warm.position.set(backyardX+3,1.4,6); }
-    _sp.set(camX + 4.6*f + mx*0.3, 2.7 + my*0.3, 5.4*f); _st.set(camX, 1.5 - my*0.4, 0);
-    _bp.set(backyardX + 6.6*f + mx*0.5, 2.0 + my*0.35, 7.6*f); _bt.set(backyardX + 0.4, 1.0 - my*0.3, 0);
+    yardVault.group.rotation.y=REDUCED?0:mx*0.25;
+    _sp.set(camX + 4.6*f, 2.7, 5.4*f); _st.set(camX, 1.5, 0);
+    _bp.set(backyardX + 6.6*f, 2.0, 7.6*f); _bt.set(backyardX + 0.4, 1.0, 0);
     camera.position.lerpVectors(_sp,_bp,blend); _camTgt.lerpVectors(_st,_bt,blend);
     camera.lookAt(_camTgt);
     renderer.render(scene,camera);
