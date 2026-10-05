@@ -3,7 +3,7 @@ import {PAGES} from '../models/pages.js';
 
 const escapeHtml = value => value.replace(/[&<>"']/g, character => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[character]));
 
-export function showWebsite(request, response, key = 'home') {
+export function renderWebsite(key = 'home') {
   const page = PAGES[key];
   const standalone = ['build', 'sizes', 'gallery', 'contact'].includes(key);
   const data = {
@@ -15,6 +15,10 @@ export function showWebsite(request, response, key = 'home') {
     pageContent: renderView(`pages/${key}`),
     pageScripts: key === 'home' ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>' : ''
   };
+  return renderView('layout', data);
+}
+
+export function showWebsite(request, response, key = 'home') {
   response.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
-  response.end(request.method === 'HEAD' ? undefined : renderView('layout', data));
+  response.end(request.method === 'HEAD' ? undefined : renderWebsite(key));
 }
