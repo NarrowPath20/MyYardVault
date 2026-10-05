@@ -67,7 +67,7 @@ test('every URL renders only its own page with valid navigation and a shared foo
     for (const [source, html] of rendered) {
       for (const [, href] of html.matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
         if (!href.startsWith('/') && !href.startsWith('#')) continue;
-        if (href === '#') continue; // Supplied agent and external review placeholders.
+        if (href === '#') continue; // Supplied agent placeholders.
         const url = new URL(href.replace(/&amp;/g, '&'), base + source);
         assert.ok(pageForPath(url.pathname), `${source}: unknown page ${href}`);
         if (url.hash) {

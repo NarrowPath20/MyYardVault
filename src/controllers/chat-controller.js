@@ -29,7 +29,7 @@ export function initChat() {
     setTimeout(function(){ ty.remove(); addMsg(t,'bot'); if(after) after(); }, Math.min(1100, 350+t.length*4)); }
 
   function mainChips(){ addChips([
-    {t:'\uD83D\uDCB0 Pricing & sizes', fn:function(){ botSay(find('price').a, function(){ offerLead('a Yard Vault'); }); }},
+    {t:'\uD83D\uDCB0 Pricing & sizes', fn:function(){ botSay(find('price').a, function(){ offerLead('a My Yard Vault 4 Corners'); }); }},
     {t:'\uD83D\uDE9A Delivery area', fn:function(){ botSay(find('deliver').a, mainChips); }},
     {t:'\uD83D\uDCB3 Financing', fn:function(){ botSay(find('financ').a, mainChips); }},
     {t:'\uD83D\uDCAC Talk to a specialist', fn:function(){ startLead(); }}

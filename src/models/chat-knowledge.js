@@ -10,7 +10,7 @@ export const KB = [
    {k:['how long','build time','install','assemble','set up','setup','quick'],
     a:"About an hour on-site for most sizes. Our crew bolts the galvanized panels together, hangs the doors, sets the locks, and walks you through it."},
    {k:['foundation','slab','concrete','pad','ground','level','dirt','gravel'],
-    a:"No slab needed \u2014 Yard Vaults sit on leveled blocks on firm ground. Already have a pad? We\u2019ll happily build on that too."},
+    a:"No slab needed \u2014 My Yard Vault 4 Corners units sit on leveled blocks on firm ground. Already have a pad? We\u2019ll happily build on that too."},
    {k:['permit','hoa','code','legal','zoning'],
     a:"Most small detached structures in the Four Corners don\u2019t need a permit, but rules vary by city, county, and HOA \u2014 worth a quick check with your local office. We can tell you what to ask."},
    {k:['rust','steel','material','gauge','galvan','durab','weather','wind','snow','rain','sun','rot','termite'],
@@ -37,7 +37,7 @@ export const KB = [
    {k:['move','relocat','take it with','disassemble'],
     a:"Yes \u2014 the same bolts that put it up take it down. It unbolts, travels flat, and goes back up at the new place."},
    {k:['warranty','guarantee'],
-    a:"Every build is backed by Yard Vault \u2014 ask your rep for current warranty coverage when you get your quote and they\u2019ll give you the exact terms in writing.",
+    a:"Every build is backed by My Yard Vault 4 Corners \u2014 ask your rep for current warranty coverage when you get your quote and they\u2019ll give you the exact terms in writing.",
     lead:true},
    {k:['human','person','talk','someone','call','phone','contact','speak','sales','email you','reach'],
     a:"You can call us at "+PHONE_TXT+" any time \u2014 or leave your details here and a specialist will reach out.",
@@ -47,6 +47,6 @@ export const KB = [
    {k:['event','fair','expo','state fair'],
     a:"We\u2019re regulars at fairs and expos across the Four Corners \u2014 the Events tab in the Gallery shows recent ones, including the New Mexico State Fair. Come kick the steel in person."},
    {k:['hello','hi','hey','howdy','yo'],
-    a:"Hey there! Ask me anything about Yard Vault \u2014 sizes, pricing, delivery, financing \u2014 or tap a topic below.",
+    a:"Hey there! Ask me anything about My Yard Vault 4 Corners \u2014 sizes, pricing, delivery, financing \u2014 or tap a topic below.",
     chips:['mainmenu']}
   ];
