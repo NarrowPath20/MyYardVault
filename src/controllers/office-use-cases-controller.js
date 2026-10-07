@@ -10,13 +10,13 @@ export function initOfficeUseCases() {
   function show(i){
     var d=DATA[i]; if(!d) return;
     img.style.opacity=0;
-    setTimeout(function(){ img.src=d.uri; img.style.opacity=1; },150);
+    setTimeout(function(){ img.src=d.uri; img.alt=d.title.replace(/&amp;/g,'&'); img.style.opacity=1; },150);
     tag.innerHTML=d.tag; ttl.innerHTML=d.title; cpy.innerHTML=d.copy;
-    tabs.forEach(function(x){x.classList.remove('active');}); tabs[i].classList.add('active');
+    tabs.forEach(function(x,j){x.classList.toggle('active',j===i);x.setAttribute('aria-pressed',String(j===i));});
   }
   tabs.forEach(function(t,i){
+    t.setAttribute('aria-pressed',String(i===0));
     t.addEventListener('click',function(){ show(i); });
-    t.addEventListener('mouseenter',function(){ show(i); });
   });
 })();
 

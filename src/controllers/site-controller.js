@@ -1,4 +1,4 @@
-import {SWATCHES, RAL, SIZES, SIZE_ORDER, ST_FINISHES} from '../models/catalog.js';
+import {STOCK_FINISHES, SWATCHES, RAL, SPECIAL_ORDER_FINISHES, SIZES, SIZE_ORDER, ST_FINISHES} from '../models/catalog.js';
 export function initSite(scene) {
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -41,33 +41,37 @@ document.addEventListener('keydown', event => {
   }
 });
 
-/* reveal on scroll */
-const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12, rootMargin:'0px 0px -8% 0px'});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
 /* swatches UI */
 const swWrap=document.getElementById('swatches');
 if(swWrap) SWATCHES.forEach((s,i)=>{
   const b=document.createElement('button');
   b.className='swatch'+(i===0?' active':''); b.style.background=s.hex; b.dataset.name=s.name;
   b.setAttribute('aria-label',s.name);
-  b.addEventListener('click',()=>{document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));b.classList.add('active');scene.setVaultColor(s);});
+  b.setAttribute('aria-pressed', String(i === 0));
+  b.addEventListener('click',()=>{
+    swWrap.querySelectorAll('.swatch').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+    b.classList.add('active'); b.setAttribute('aria-pressed','true'); scene.setVaultColor(s);
+    document.querySelector('.swatch-row .lbl').textContent='Stocked finish: '+s.name;
+  });
   swWrap.appendChild(b);
 });
+if(swWrap) scene.setVaultColor(SWATCHES[0]);
 
 /* storage finish swatches -> recolor the shed ; view toggle -> switch door photo */
 
 const stsw=document.getElementById('stSwatches');
-if(stsw){ ST_FINISHES.forEach((sw)=>{
+if(stsw){ ST_FINISHES.forEach((sw,i)=>{
   const b=document.createElement('button');
-  b.className='swatch'; b.style.background=sw.hex; b.dataset.name=sw.name; b.setAttribute('aria-label',sw.name);
-  b.addEventListener('click',()=>{ stsw.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active')); b.classList.add('active'); if(window.__recolorShed) window.__recolorShed(sw.hex); document.body.classList.add('st-focus'); if(window.__stRedraw) window.__stRedraw(); });
+  b.className='swatch'+(i===0?' active':''); b.style.background=sw.hex; b.dataset.name=sw.name; b.setAttribute('aria-label',sw.name); b.setAttribute('aria-pressed',String(i===0));
+  b.addEventListener('click',()=>{ stsw.querySelectorAll('.swatch').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');}); b.classList.add('active'); b.setAttribute('aria-pressed','true'); document.querySelector('.st-finish-lbl').textContent='Stocked finish: '+sw.name; if(window.__recolorShed) window.__recolorShed(sw.hex); document.body.classList.add('st-focus'); if(window.__stRedraw) window.__stRedraw(); });
   stsw.appendChild(b);
 }); }
-document.querySelectorAll('#stViews .st-view').forEach(v=>v.addEventListener('click',()=>{
-  document.querySelectorAll('#stViews .st-view').forEach(x=>x.classList.remove('active')); v.classList.add('active');
+document.querySelectorAll('#stViews .st-view').forEach(v=>{
+  v.setAttribute('aria-pressed',String(v.classList.contains('active')));
+  v.addEventListener('click',()=>{
+  document.querySelectorAll('#stViews .st-view').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');}); v.classList.add('active');v.setAttribute('aria-pressed','true');
   if(window.__setShedView) window.__setShedView(v.dataset.shedView);
-}));
+});});
 
 
 /* recolor ONLY the shed in each door photo, keeping its real shading */
@@ -97,7 +101,7 @@ document.querySelectorAll('#stViews .st-view').forEach(v=>v.addEventListener('cl
     side:{bg:document.getElementById('stBgSrc'),  mask:document.getElementById('stMaskSrc')},
     end: {bg:document.getElementById('stBgSrc2'), mask:document.getElementById('stMaskSrc2')}
   };
-  let view='side', color=null;
+  let view='side', color=ST_FINISHES[0].hex;
   const PHOTO={ '#0f9199':{side:document.getElementById('stCTeal'), end:document.getElementById('stCTealEnd')}, '#15487c':{side:document.getElementById('stCBlue'), end:document.getElementById('stCBlueEnd')}, '#cba54a':{side:document.getElementById('stCSand'), end:document.getElementById('stCSandEnd')}, '#2f5233':{side:document.getElementById('stCGreen'), end:document.getElementById('stCGreenEnd')}, '#555e61':{side:document.getElementById('stCGrey'), end:document.getElementById('stCGreyEnd')}, '#52504c':{side:document.getElementById('stCCharcoal'), end:document.getElementById('stCCharcoalEnd')}, '#a7acaa':{side:document.getElementById('stCWhiteal'), end:document.getElementById('stCWhitealEnd')}, '#a2302a':{side:document.getElementById('stCRed'), end:document.getElementById('stCRedEnd')}, '#6a2b8c':{side:document.getElementById('stCViolet'), end:document.getElementById('stCVioletEnd')}, '#15151a':{side:document.getElementById('stCBlack'), end:document.getElementById('stCBlackEnd')} };
   const hexToRgb=h=>{h=h.replace('#','');return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];};
   function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,ss,l=(mx+mn)/2;if(mx===mn){h=ss=0;}else{const d=mx-mn;ss=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;}h/=6;}return [h,ss,l];}
@@ -140,11 +144,21 @@ document.querySelectorAll('#stViews .st-view').forEach(v=>v.addEventListener('cl
 })();
 
 /* color chips */
-const cg=document.getElementById('colorGrid');
-if(cg) RAL.forEach(r=>{
+const quoteFinish=document.getElementById('qColor');
+if(quoteFinish){
+  const stocked=document.createElement('optgroup'); stocked.label='Stocked finishes';
+  STOCK_FINISHES.forEach(finish=>stocked.appendChild(new Option(`${finish.name} (${finish.code})`,finish.name)));
+  const special=document.createElement('optgroup'); special.label='Special order: substantial delivery delays';
+  SPECIAL_ORDER_FINISHES.forEach(finish=>special.appendChild(new Option(`${finish.n} (${finish.c}) - special order`,`${finish.n} - special order`)));
+  quoteFinish.append(stocked,special,new Option('Not sure yet','Not sure yet'));
+}
+document.querySelectorAll('.stock-finish-grid,.special-finish-grid').forEach(cg=>{
+const finishes=cg.classList.contains('special-finish-grid')?SPECIAL_ORDER_FINISHES:RAL;
+finishes.forEach(r=>{
   const d=document.createElement('div'); d.className='chip';
-  d.innerHTML=`<div class="sw" style="background:${r.h}"></div><div class="meta"><b>${r.n}</b><span>${r.c}</span></div>`;
+  d.innerHTML=`<div class="sw" style="background:${r.h}"></div><div class="meta"><b>${r.n}</b><span>${cg.classList.contains('special-finish-grid')?'Special order': 'Stocked finish'}</span><span>${r.c}</span></div>`;
   cg.appendChild(d);
+});
 });
 
 /* size selector */
@@ -153,16 +167,18 @@ let firstTab;
 if(sizeTabs) SIZE_ORDER.forEach((k,i)=>{
   const b=document.createElement('button'); b.className='size-tab'+(k==='10'?' active':'');
   b.innerHTML=k+'&prime;'; b.dataset.k=k;
+  b.setAttribute('aria-pressed',String(k==='10'));
   b.addEventListener('click',()=>selectSize(k,b));
   sizeTabs.appendChild(b);
 });
 function selectSize(k,btn){
-  document.querySelectorAll('.size-tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.size-tab').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
   btn.classList.add('active');
+  btn.setAttribute('aria-pressed','true');
   const s=SIZES[k];
   const img=document.getElementById('sizeImg');
   img.style.opacity=0;
-  setTimeout(()=>{img.src=s.img; img.style.opacity=1;},180);
+  setTimeout(()=>{img.src=s.img; img.alt=k+'-foot storage vault with dimensions'; img.style.opacity=1;},180);
   document.getElementById('sizeView').style.background=s.bg;
   document.getElementById('sizeTag').innerHTML=s.tag;
   document.getElementById('sizeName').innerHTML=s.name;
@@ -183,7 +199,7 @@ if(sizeTabs) document.getElementById('sizeView').style.background=SIZES['10'].bg
   const eb=head&&head.querySelector('.eyebrow'), h2=head&&head.querySelector('h2'), lead=head&&head.querySelector('.lead');
   const orig=head?{e:eb.textContent,h:h2.textContent,l:lead.textContent}:null;
   const back={e:'See it at home', h:'Picture it in your backyard.',
-    l:'Your vault \u2014 in the finish you picked \u2014 sitting on blocks at dusk, like it has always been there. Tap another use to head back to the showroom.'};
+    l:'Your vault, in the finish you picked, sitting on blocks at dusk, like it has always been there. Tap another use to head back to the showroom.'};
   function copy(on){ if(!head) return; eb.textContent=on?back.e:orig.e; h2.textContent=on?back.h:orig.h; lead.textContent=on?back.l:orig.l; }
   cards.forEach(c=>{
     c.setAttribute('role','button'); c.setAttribute('tabindex','0');
@@ -192,7 +208,7 @@ if(sizeTabs) document.getElementById('sizeView').style.background=SIZES['10'].bg
       cards.forEach(x=>x.classList.toggle('active', x===c && on));
       copy(on);
       if(hint) hint.textContent = on
-        ? 'You\u2019re seeing it in your backyard \u2014 tap another use to return to the showroom.'
+        ? 'You\u2019re seeing it in your backyard, tap another use to return to the showroom.'
         : 'Tap \u201cStorage\u201d to picture it in your backyard.';
       if(on){ const u=document.getElementById('uses'); if(u) u.scrollIntoView({behavior:'smooth',block:'start'}); }
     };
@@ -207,18 +223,21 @@ if(sizeTabs) document.getElementById('sizeView').style.background=SIZES['10'].bg
   const names=['showroom','quote','financing'];
   function selectPanel(name){
     if(names.indexOf(name)<0) return;
-    opts.forEach(o=>o.classList.toggle('active', o.dataset.panel===name));
+    opts.forEach(o=>{o.classList.toggle('active', o.dataset.panel===name);o.setAttribute('aria-pressed',String(o.dataset.panel===name));});
     names.forEach(p=>{ const el=document.getElementById('panel-'+p); if(el) el.hidden=(p!==name); });
   }
   opts.forEach(o=>o.addEventListener('click',()=>selectPanel(o.dataset.panel)));
   document.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',()=>selectPanel(a.dataset.open)));
   window.__selectPanel=selectPanel;
+  if(opts.length)selectPanel(opts.find(o=>o.classList.contains('active'))?.dataset.panel || 'showroom');
 
   const dateEl=document.getElementById('sDate');
   if(dateEl){ const t=new Date(); t.setDate(t.getDate()+1); dateEl.min=t.toISOString().split('T')[0]; }
-  document.querySelectorAll('#slots .slot').forEach(b=>b.addEventListener('click',()=>{
-    document.querySelectorAll('#slots .slot').forEach(x=>x.classList.remove('active')); b.classList.add('active');
-  }));
+  document.querySelectorAll('#slots .slot').forEach(b=>{
+    b.setAttribute('aria-pressed',String(b.classList.contains('active')));
+    b.addEventListener('click',()=>{
+    document.querySelectorAll('#slots .slot').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');}); b.classList.add('active');b.setAttribute('aria-pressed','true');
+  });});
 
 })();
 

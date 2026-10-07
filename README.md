@@ -64,4 +64,14 @@ Page URLs and metadata live in `src/models/pages.js`. Old bookmarks such as `/#s
 
 Forms and chat lead capture submit to a shared backend API. Leads are saved privately before any Twilio notification; live SMS is disabled by default and requires explicit account configuration. See [Twilio setup and lead workflow](docs/TWILIO_SETUP.md) for local testing, account activation, delivery callbacks, and reviewing saved requests. The current store uses local files; the adapter can be replaced with the client's database or CRM for deployment.
 
-The source file in Downloads is untouched. Fonts and Three.js still use the original external providers. Chat answers use the local knowledge base. Existing placeholder content and agent-portal behavior remain as supplied.
+Fonts and Three.js are served locally with upstream licenses under `public/assets/licenses/`; no Google Fonts or CDN request is required at runtime. Chat answers use the local knowledge base and do not send conversations to an AI provider.
+
+## Privacy and trust controls
+
+The footer links to privacy, website terms, refund information, cookies, business details, communication preferences, and data-deletion instructions. All inquiry forms and chat contact requests require unchecked adult and response-permission confirmations; the API checks both and records the current notice version. Inquiry storage prunes records older than 180 days at startup and daily while the server runs.
+
+Use `node tools/leads.js delete <reference> --identity-verified` only after verifying a deletion request through the contact method already on file. Provider, email, CRM, and backup copies need separate handling. This website has no automated customer email service or marketing list; the manual email footer is in `docs/EMAIL_FOOTER.txt`.
+
+Set `BUSINESS_LEGAL_NAME` and `BUSINESS_POSTAL_ADDRESS` to verified seller details in `.env`. Actual refund/deposit terms, manufacturer claim evidence, and image permission records still need business-owner confirmation. See [the 20-item audit](docs/SITE_AUDIT.md) and [image rights inventory](docs/IMAGE_RIGHTS.csv).
+
+Run `node tools/browser-smoke.js --accessibility --responsive` for both-theme axe-core WCAG A/AA checks and all-page viewport checks. Accessibility results, including items requiring manual contrast review, are saved in `out/audit/accessibility.json`. Axe is a development tool and is never loaded by the website.

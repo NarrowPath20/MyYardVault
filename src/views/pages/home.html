@@ -4,15 +4,15 @@
   <div class="hero-inner">
     <div class="wrap">
       <div class="hero-content">
-        <span class="eyebrow">the Four Corners' only flat-pack steel vault</span>
-        <h1>Storage that <span class="glow">walks into</span> your backyard.</h1>
-        <p class="lead">My Yard Vault 4 Corners panels arrive flat, roll through any gate, and bolt into a 20-gauge galvanized steel vault — built on your land in about an hour.</p>
+        <h1>Steel storage.<br>Built inside your gate.</h1>
+        <p class="lead">My Yard Vault 4 Corners panels arrive flat, can pass through suitable access paths, and bolt into a 20-gauge galvanized steel vault, built on your land in about an hour.</p>
         <div class="hero-cta">
           <a class="btn btn-primary" href="/contact?panel=quote" data-open="quote">Get a quote
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           <button class="btn btn-ghost" id="replayBuild">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9z"/></svg>
             Watch it build</button>
+          <button class="btn btn-ghost" id="pauseMotion" type="button" aria-pressed="false">Pause motion</button>
         </div>
         <div class="hero-badges">
           <div><b>20</b><span>gauge<br>galvanized steel</span></div>
@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="swatch-row">
-    <span class="lbl">Pick a finish</span>
+    <span class="lbl">Pick a stocked finish</span>
     <div class="swatches" id="swatches"></div>
   </div>
   <div class="scrollcue"><span class="mono">Scroll</span><span class="line"></span></div>
@@ -43,16 +43,18 @@
   </div>
 </div>
 
+<div class="sec"><div class="wrap">{{> partials/finish-availability}}</div></div>
+
 <!-- THESIS -->
 <section class="sec thesis">
   <div class="wrap thesis-grid">
     <div class="reveal">
       <span class="eyebrow">The difference</span>
-      <h2 style="margin-top:18px">A shipping container can't fit through your gate. <em>Ours can.</em></h2>
-      <p class="lead" style="margin-top:22px">Conventional storage means a crane, a flatbed, and a driveway wide enough to take a 20-foot box. My Yard Vault 4 Corners throws that out. Every wall, floor, and roof panel carries by hand — then bolts together exactly where you want it.</p>
+      <h2 style="margin-top:18px">Panels go through the gate.<br>The vault goes together inside.</h2>
+      <p class="lead" style="margin-top:22px">Conventional storage means a crane, a flatbed, and a driveway wide enough to take a 20-foot box. Our crew carries the panels to your build site. Every wall, floor, and roof panel carries by hand, then bolts together exactly where you want it.</p>
       <ul class="thesis-points">
         <li><span class="dot"></span><span>Flat panels pass through fences, side yards, and gates as narrow as a doorway.</span></li>
-        <li><span class="dot"></span><span>No crane, no concrete pad, no permit headaches — it sets on blocks and levels in minutes.</span></li>
+        <li><span class="dot"></span><span>Panels can be assembled on-site. Confirm access, a suitable base, and local permit requirements first.</span></li>
         <li><span class="dot"></span><span>Want to move it later? It comes apart the same way it went up.</span></li>
       </ul>
     </div>
@@ -71,22 +73,22 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="eyebrow">Engineering</span>
-      <h2>Engineered to outlast the weather.</h2>
+      <h2>Steel panels. Sealed seams. A finished interior.</h2>
       <p class="lead">Two layers between your gear and a Southwest monsoon: corrugated 20-gauge galvanized steel, sealed under a powder coat inside and out.</p>
     </div>
     <div class="spec-grid">
       <div class="spec-cards">
-        <div class="spec-card reveal d1"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg>
-          <h3>20-gauge galvanized</h3><p>Heavy-gauge zinc-coated steel that shrugs off rust, dents, and decades of sun.</p></div>
-        <div class="spec-card reveal d2"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V8M8 20V5M12 20V8M16 20V5M20 20V8"/></svg>
+        <div class="spec-card reveal d1">
+          <h3>20-gauge galvanized</h3><p>Zinc-coated steel panels with a powder-coated finish inside and out.</p></div>
+        <div class="spec-card reveal d2">
           <h3>Corrugated for strength</h3><p>Vertical ribbing turns thin steel into rigid, load-bearing walls.</p></div>
-        <div class="spec-card reveal d1"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h18M12 3v18" /><circle cx="12" cy="12" r="9"/></svg>
+        <div class="spec-card reveal d1">
           <h3>Powder-coated in &amp; out</h3><p>A baked finish on every panel face resists corrosion, scratches, and fading.</p></div>
-        <div class="spec-card reveal d2"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-          <h3>Weather-tight &amp; rodent-proof</h3><p>Sealed seams and a tight steel envelope keep water, dust, and critters out.</p></div>
-        <div class="spec-card reveal d1"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="12" rx="1"/><path d="M7 7V5h10v2M7 19v2M17 19v2"/></svg>
+        <div class="spec-card reveal d2">
+          <h3>Sealed steel enclosure</h3><p>Panel joints and door seals help protect stored items. Performance depends on installation, site conditions, and maintenance.</p></div>
+        <div class="spec-card reveal d1">
           <h3>Forklift pockets</h3><p>Built-in pockets let you reposition the whole unit with a forklift.</p></div>
-        <div class="spec-card reveal d2"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M14 3v18M10 12h.01"/></svg>
+        <div class="spec-card reveal d2">
           <h3>Doors where you want</h3><p>Specify door placement on the side or the end to fit your access and your yard.</p></div>
       </div>
       <div class="reveal d2" style="display:flex; flex-direction:column">
@@ -116,21 +118,21 @@
         <thead><tr><th></th><th class="yv">My Yard Vault 4 Corners</th><th>Wood shed</th><th>Shipping container</th></tr></thead>
         <tbody>
           <tr><td>Fits through a yard gate</td>
-            <td class="yv"><span class="ok">Yes</span><small>Flat panels roll through any standard gate</small></td>
+            <td class="yv"><span class="ok">Yes</span><small>Panel dimensions and access must be checked</small></td>
             <td><span class="no">Rarely</span><small>Built in place or craned over</small></td>
             <td><span class="no">No</span><small>Needs truck access &amp; clearance</small></td></tr>
           <tr><td>On-site build time</td>
             <td class="yv"><span class="ok">~1 hour</span><small>Bolted together on your land</small></td>
             <td><span class="no">Days</span><small>Framing, sheathing, roofing, paint</small></td>
-            <td><span class="no">None</span><small>Arrives whole &mdash; if the truck can reach</small></td></tr>
+            <td><span class="no">None</span><small>Arrives whole, if the truck can reach</small></td></tr>
           <tr><td>Material</td>
             <td class="yv"><span class="ok">20-gauge galvanized steel</span></td>
             <td><span class="no">Wood framing &amp; siding</span></td>
             <td><span class="no">Corten steel</span><small>Condition varies on used boxes</small></td></tr>
           <tr><td>Rot, termites &amp; warping</td>
-            <td class="yv"><span class="ok">Immune</span></td>
+            <td class="yv"><span class="ok">Steel construction</span></td>
             <td><span class="no">Vulnerable</span><small>Needs sealing &amp; upkeep</small></td>
-            <td class="yv"><span class="ok">Immune</span></td></tr>
+            <td class="yv"><span class="ok">Steel construction</span></td></tr>
           <tr><td>Foundation</td>
             <td class="yv"><span class="ok">Leveled blocks</span><small>No concrete slab required</small></td>
             <td><span class="no">Slab or skids</span></td>
@@ -146,7 +148,7 @@
         </tbody>
       </table>
     </div>
-    <p class="cmp-note reveal">Truck access isn&rsquo;t a problem on your site? We stock one-trip containers too &mdash; <a data-view="conex" href="/shipping-containers">see shipping containers</a>.</p>
+    <p class="cmp-note reveal">Truck access isn&rsquo;t a problem on your site? We stock one-trip containers too, <a data-view="conex" href="/shipping-containers">see shipping containers</a>.</p>
   </div>
 </section>
 
@@ -158,26 +160,26 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="eyebrow">Built for business too</span>
-      <h2>More than a shed. A revenue tool.</h2>
-      <p class="lead">The same flat-pack system builds storefronts, offices, and rentable bays — so the vault in your yard can start paying for itself.</p>
+      <h2>Choose a unit for the work you do.</h2>
+      <p class="lead">The same flat-pack system builds storefronts, offices, and rentable bays, so the vault in your yard can start paying for itself.</p>
     </div>
     <div class="use-grid">
       <a class="use-card reveal d1" data-view="storage" href="/storage"><div class="pic" style="background:#fffffe"><img src="/assets/images/3c41a059f818b3b7.webp" alt="Steel storage unit"></div>
-        <div class="txt"><h3>Storage units</h3><p>Secure overflow for tools, inventory, seasonal stock, and equipment — at home or on the jobsite.</p><div class="uc-price">From $3,199</div></div></a>
+        <div class="txt"><h3>Storage units</h3><p>Secure overflow for tools, inventory, seasonal stock, and equipment, at home or on the jobsite.</p><div class="uc-price">From $3,199</div></div></a>
       <a class="use-card reveal d2" data-view="kiosk" href="/kiosk"><div class="pic" style="background:#fefffe"><img src="/assets/images/eea90d72b9633ee3.webp" alt="Kiosk unit with serving window"></div>
         <div class="txt"><h3>Kiosk units</h3><p>A fold-up serving window and brand-ready finish turn a vault into a coffee stand, ticket booth, or pop-up shop.</p><div class="uc-price">From $8,490</div></div></a>
       <a class="use-card reveal d3" data-view="office" href="/office"><div class="pic" style="background:#f5f5f5"><img src="/assets/images/0874d0d4bd7e34f7.jpg" alt="My Yard Vault 4 Corners office unit"></div>
         <div class="txt"><h3>Office units</h3><p>Insulated panels, windows, and a finished interior make a weather-ready workspace anywhere you need one.</p><div class="uc-price">From $10,625</div></div></a>
       <a class="use-card reveal d4" data-view="multi" href="/multi-unit"><div class="pic" style="background:#ffffff"><img src="/assets/images/7d0a6608cb88339b.webp" alt="Multi-compartment rental unit"></div>
-        <div class="txt"><h3>Multi-compartment</h3><p>Two or four individually-locked bays in one footprint — built to rent out by the unit.</p><div class="uc-price">From $13,700</div></div></a>
+        <div class="txt"><h3>Multi-compartment</h3><p>Two or four individually-locked bays in one footprint, built to rent out by the unit.</p><div class="uc-price">From $13,700</div></div></a>
     </div>
-    <p class="scene-hint" id="sceneHint">Tap “Storage” to open its own backyard view →</p>
+
     <div class="biz-band reveal">
       <div class="pic"><img class="plx" data-parallax="0.06" src="/assets/images/708f6b49b77473bb.webp" alt="Team accessing organized gear from a My Yard Vault 4 Corners"></div>
       <div class="txt">
         <span class="eyebrow">For teams, schools &amp; operators</span>
-        <h3 style="margin-top:16px">Put the asset to work.</h3>
-        <p>Leagues store their gear in it. Property managers rent the bays. Contractors lock down a jobsite. Whatever the business, a My Yard Vault 4 Corners is a hard asset that earns — not an expense that disappears.</p>
+        <h3 style="margin-top:16px">Equipment storage for your crew.</h3>
+        <p>Keep team equipment, rental inventory, or jobsite tools together in a lockable steel unit. Tell us what you need to store and how you access it; we can help choose the size and door placement.</p>
         <a class="btn btn-ghost" href="/contact?panel=quote" data-open="quote" style="margin-top:24px">Talk through your use case</a>
       </div>
     </div>
@@ -194,7 +196,7 @@
     <div class="sec-head reveal">
       <span class="eyebrow">Service area</span>
       <h2>Built across the Four Corners.</h2>
-      <p class="lead">Based in Gallup, delivering and building across Arizona, New Mexico, Colorado, and Utah &mdash; with Texas and California next on the map.</p>
+      <p class="lead">Based in Gallup, delivering and building across Arizona, New Mexico, Colorado, and Utah, with Texas and California next on the map.</p>
     </div>
     <div class="cov-grid">
       <div class="cov-map reveal">
@@ -233,9 +235,9 @@
         </svg>
       </div>
       <div class="cov-side reveal d1">
-        <div class="cv-stat"><b>4</b><span>states served today &mdash; Arizona, New Mexico, Colorado, and Utah.</span></div>
+        <div class="cv-stat"><b>4</b><span>states served today, Arizona, New Mexico, Colorado, and Utah.</span></div>
         <div class="cv-stat"><b>1 hub</b><span>every build rolls out of Gallup, on I-40 at the heart of the Four Corners.</span></div>
-        <div class="cv-stat"><b>Flat</b><span>panels travel flat, so delivery reaches yards a container truck never could.</span></div>
+        <div class="cv-stat"><b>Flat</b><span>panels travel flat. Confirm the delivery route and access dimensions with our team.</span></div>
         <div class="cv-stat"><b>Next</b><span>Texas and California are on the expansion map. Outside the area? <a href="/contact?panel=quote" data-open="quote" style="color:var(--violet-lt)">Ask anyway</a>.</span></div>
       </div>
     </div>
@@ -250,19 +252,19 @@
       <h2>Everything people ask before they buy.</h2>
     </div>
     <div class="faq reveal">
-      <details><summary>Will it really fit through my gate?</summary><div class="fa">Yes &mdash; that&rsquo;s the whole point of the design. Every My Yard Vault 4 Corners ships as flat panels that roll through a standard yard gate, then bolt together on your land. No crane, no fence coming down, no torn-up driveway.</div></details>
+      <details><summary>Will it really fit through my gate?</summary><div class="fa">Yes, that&rsquo;s the whole point of the design. Every My Yard Vault 4 Corners ships as flat panels that roll through a standard yard gate, then bolt together on your land. No crane, no fence coming down, no torn-up driveway.</div></details>
       <details><summary>How long does the build take?</summary><div class="fa">About an hour for most sizes. Our crew assembles the galvanized panels on-site, sets the doors and locks, and walks you through it before we leave.</div></details>
-      <details><summary>Do I need a concrete slab?</summary><div class="fa">No. My Yard Vault 4 Corners units sit on leveled blocks on firm ground &mdash; the same way you&rsquo;ve seen them in our install photos. If you already have a slab or pad, we&rsquo;ll happily build on that too.</div></details>
-      <details><summary>Do I need a permit?</summary><div class="fa">In most Four Corners jurisdictions, small detached structures like these don&rsquo;t require a permit &mdash; but rules vary by city, county, and HOA. We recommend a quick check with your local office, and we can point you to what to ask.</div></details>
-      <details><summary>Will it rust?</summary><div class="fa">The panels are 20-gauge galvanized steel &mdash; the zinc coating is what protects highway guardrails from the same sun, snow, and monsoon seasons. No rot, no termites, no warping, and no annual repainting.</div></details>
+      <details><summary>Do I need a concrete slab?</summary><div class="fa">No. My Yard Vault 4 Corners units sit on leveled blocks on firm ground, the same way you&rsquo;ve seen them in our install photos. If you already have a slab or pad, we&rsquo;ll happily build on that too.</div></details>
+      <details><summary>Do I need a permit?</summary><div class="fa">Permit, zoning, foundation, and HOA requirements vary by location, size, and intended use. Check with your local authority before ordering; do not assume a permit exemption.</div></details>
+      <details><summary>How do I maintain the finish?</summary><div class="fa">Ask for the selected model's material, coating, and maintenance instructions in writing. Inspect and maintain the finish, door hardware, and seals; do not assume a maintenance-free or corrosion-proof product.</div></details>
       <details><summary>How secure is it?</summary><div class="fa">Every unit closes on recessed, lockable T-handle latches with room for your own padlock, and the panel system leaves no exposed hinge pins to pull. See the <a data-view="accessories" href="/accessories">accessories page</a> for the locking hardware up close.</div></details>
       <details><summary>Can I move it later?</summary><div class="fa">Yes. The same bolts that put it up take it down. If you move house or want it on the other side of the yard, it unbolts, travels flat, and goes back up.</div></details>
-      <details><summary>How do payments work?</summary><div class="fa">Two partner options: financing and credit through Synchrony, or lease-to-own with no credit needed through Acima. Try the <a href="/contact?panel=financing" data-go-fin>payment estimator</a> to ballpark a monthly number, then apply in minutes.</div></details>
+      <details><summary>How do payments work?</summary><div class="fa">Ask the team about current financing and lease-to-own availability, provider eligibility, rates, fees, and total cost. Try the <a href="/contact?panel=financing" data-go-fin>payment estimator</a> to ballpark a monthly number, and confirm the provider terms before applying.</div></details>
     </div>
   </div>
 </section>
 
-<!-- GET STARTED: pick one — showroom, quote, or financing -->
+<!-- GET STARTED: pick one, showroom, quote, or financing -->
 
 
 <!-- FOOTER -->

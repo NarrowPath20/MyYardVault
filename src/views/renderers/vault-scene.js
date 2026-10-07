@@ -1,12 +1,20 @@
 export function initVaultScene(api) {
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let motionPaused=REDUCED;
+const motionButton=document.getElementById('pauseMotion');
+const motionLabel=()=>{motionButton.textContent=motionPaused?'Resume motion':'Pause motion';motionButton.setAttribute('aria-pressed',String(motionPaused));};
+motionLabel();
 /* ---------------- THREE.JS VAULT ---------------- */
 (function(){
   const canvas=document.getElementById('vault-canvas');
-  if(!window.THREE){document.getElementById('heroFallback').style.opacity=1;return;}
+  const fallback=()=>{
+    document.getElementById('heroFallback').style.opacity=1;
+    motionButton.hidden=true; document.getElementById('replayBuild').hidden=true;
+  };
+  if(!window.THREE){fallback();return;}
   let renderer;
   try{ renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'}); }
-  catch(err){ document.getElementById('heroFallback').style.opacity=1; return; }
+  catch(err){ fallback(); return; }
   renderer.setClearColor(0x000000,0);
   renderer.outputEncoding=THREE.sRGBEncoding;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;
@@ -276,6 +284,7 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let loadAnim=true, aStart=performance.now(), aDur=4400, asm=0;
   if(REDUCED){ loadAnim=false; asm=1; applyAssembly(1); }
+  motionButton.addEventListener('click',()=>{motionPaused=!motionPaused;if(motionPaused)loadAnim=false;motionLabel();});
   document.getElementById('replayBuild').addEventListener('click',(e)=>{ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); loadAnim=true; aStart=performance.now(); });
 
   const cV=new THREE.Color(0xb574ec), cW=new THREE.Color(0xc66a3c), rimCol=new THREE.Color(0xb574ec);
@@ -283,7 +292,7 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let mx=0,my=0,tmx=0,tmy=0;
   if(!REDUCED && matchMedia('(hover:hover) and (pointer:fine)').matches){
     addEventListener('pointermove',e=>{
-      if(e.pointerType !== 'mouse') return;
+      if(e.pointerType !== 'mouse'||motionPaused) return;
       tmx=clamp(e.clientX/innerWidth-.5,-.5,.5);
       tmy=clamp(e.clientY/innerHeight-.5,-.5,.5);
     },{passive:true});
@@ -293,7 +302,7 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   let paused=false;
-  document.addEventListener('visibilitychange',()=>{paused=document.hidden; if(!paused) requestAnimationFrame(loop);});
+  document.addEventListener('visibilitychange',()=>{paused=document.hidden;});
 
   function resize(){ renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth<700?1.6:2)); renderer.setSize(innerWidth,innerHeight,false); camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); }
   addEventListener('resize',resize); resize();
@@ -323,20 +332,20 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     hemi.intensity=0.55*sb; key.intensity=1.15*sb; rim.intensity=1.5*sb; fill.intensity=0.5*sb; warm.intensity=0.45*sb;
     sun.intensity=1.35*blend; skyFill.intensity=0.42*blend; amb.intensity=0.26*blend; sun.castShadow=blend>0.05; bulbA.intensity=0.75*blend; bulbB.intensity=0.65*blend;
     if(scene.fog) scene.fog.color.copy(FOG_DARK).lerp(FOG_HAZE, blend);
-    mx+=(tmx-mx)*0.05; my+=(tmy-my)*0.05;
+    if(!motionPaused){mx+=(tmx-mx)*0.05; my+=(tmy-my)*0.05;}
     if(!inBack){
       showroom.children.forEach(g=>{
-        if(!REDUCED && !(g===heroGroup && loadAnim)) g.userData.spinAngle+=g.userData.spin*frameScale;
+        if(!motionPaused && !(g===heroGroup && loadAnim)) g.userData.spinAngle+=g.userData.spin*frameScale;
         g.rotation.y=g.userData.spinAngle+(REDUCED?0:mx*0.35);
         g.rotation.x=REDUCED?0:my*0.08;
-        g.position.y=REDUCED?0:Math.sin(now*0.0006+g.userData.phase)*0.04;
+        if(!motionPaused)g.position.y=Math.sin(now*0.0006+g.userData.phase)*0.04;
       });
       const warmW=Math.max(0,1-Math.abs(sp-0.66)/0.16);
       rimCol.copy(cV).lerp(cW,warmW*0.85); rim.color.lerp(rimCol,0.05);
       camX += (sp*TRAVEL - camX)*0.07;
       rim.position.set(camX+6,3,-5); fill.position.set(camX-6,2,5); warm.position.set(camX+3,1,7);
       const arr=points.geometry.attributes.position.array;
-      for(let i=0;i<pcount;i++){ arr[i*3+1]+=0.004; if(arr[i*3+1]>7.5) arr[i*3+1]=-0.5; }
+      if(!motionPaused)for(let i=0;i<pcount;i++){ arr[i*3+1]+=0.004; if(arr[i*3+1]>7.5) arr[i*3+1]=-0.5; }
       points.geometry.attributes.position.needsUpdate=true;
     } else { warm.position.set(backyardX+3,1.4,6); }
     yardVault.group.rotation.y=REDUCED?0:mx*0.25;

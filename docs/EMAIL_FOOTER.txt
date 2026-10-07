@@ -1,0 +1,11 @@
+Use this footer for manually sent customer follow-up emails. This application has no outbound customer email service.
+Replace the business identity/address with verified information before commercial email is sent. Do not use inquiry consent as marketing consent.
+
+My Yard Vault 4 Corners
+[Full legal sender name and valid business postal address required]
+505-879-5331 | info@myyardvault.com
+Stop optional follow-up: https://www.myyardvault.com/unsubscribe
+You may also reply asking us to stop optional follow-up.
+Privacy and data deletion: https://www.myyardvault.com/data-deletion
+
+Operators must monitor these requests and suppress optional follow-up promptly, including in any external CRM/email system. Opening the page is not an automatic opt-out. Add a working unsubscribe/suppression integration before enabling automated commercial email. Order/service notices must not be used to disguise marketing.
