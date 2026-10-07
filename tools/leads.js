@@ -24,4 +24,9 @@ if(command === 'list') {
   await store.update(id,current=>{current.notification.state='pending';});
   await deliverNotification(config,store,record);
   console.log('Notification state:',(await store.read(id)).notification.state);
-} else throw Error('Usage: node tools/leads.js list | show <reference> | retry <reference> --send');
+} else if(command === 'delete') {
+  if(flag !== '--identity-verified') throw Error('Verify the requester through the contact method already on file before deletion; then pass --identity-verified.');
+  console.log(await store.delete(id) ? 'Inquiry deleted. Review provider, correspondence, and backup copies separately.' : 'Inquiry not found.');
+} else if(command === 'prune') {
+  console.log('Expired inquiry records removed:', await store.prune());
+} else throw Error('Usage: node tools/leads.js list | show <reference> | retry <reference> --send | delete <reference> --identity-verified | prune');

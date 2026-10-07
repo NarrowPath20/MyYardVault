@@ -6,29 +6,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{pageTitle}}</title>
 <meta name="description" content="{{pageDescription}}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/fonts.css">
 <link rel="stylesheet" href="/assets/css/site.css">
 <link rel="stylesheet" href="/assets/css/responsive.css">
 <link rel="stylesheet" href="/assets/css/theme.css">
+<link rel="stylesheet" href="/assets/css/privacy.css">
 </head>
 <body class="{{bodyClass}}" data-page="{{pageKey}}">
-<div id="introVeil" aria-hidden="true"></div>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 {{pageAssets}}
-<div id="vignette"></div>
-<div id="grain"></div>
+
 
 <!-- NAV -->
 {{> partials/header}}
 {{> partials/navigation}}
+{{> partials/cookie-banner}}
 
-<main id="main-content">
+<main id="main-content" tabindex="-1">
 {{pageContent}}
+{{quoteDisclosure}}
 </main>
 {{> partials/footer}}
 
-<div class="lb" id="lightbox" role="dialog" aria-modal="true" aria-label="Focused image" aria-hidden="true">
+<div class="lb" id="lightbox" role="dialog" aria-modal="true" aria-label="Focused image" aria-hidden="true" inert>
   <button class="lb-btn lb-close" type="button" aria-label="Close">&times;</button>
   <button class="lb-btn lb-nav lb-prev" type="button" aria-label="Previous image">&#8249;</button>
   <figure class="lb-stage">
@@ -38,7 +38,8 @@
   <button class="lb-btn lb-nav lb-next" type="button" aria-label="Next image">&#8250;</button>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 
 {{> partials/chat}}
 {{pageScripts}}

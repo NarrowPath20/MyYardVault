@@ -1,4 +1,5 @@
 import {createLeadSubmitter} from '../models/lead-client.js';
+import {CONSENT_VERSION} from '../models/privacy.js';
 
 export function initLeadForms() {
   const value = id => document.getElementById(id)?.value || '';
@@ -19,7 +20,9 @@ export function initLeadForms() {
       submitting = true; button.disabled = true; form.setAttribute('aria-busy', 'true');
       status.textContent = 'Sending your request...'; status.classList.remove('lead-error');
       try {
-        const result = await submit({...payload(), website: form.elements.website.value});
+        const result = await submit({...payload(), website: form.elements.website.value,
+          contactConsent:form.elements.contactConsent.checked, adultConfirmed:form.elements.adultConfirmed.checked,
+          consentVersion:CONSENT_VERSION});
         status.textContent = `Your request has been received. Reference: ${result.reference.slice(0,8)}.`;
       } catch(error) {
         status.classList.add('lead-error');

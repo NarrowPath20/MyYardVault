@@ -1,4 +1,4 @@
-import {mkdir, readFile, writeFile, rename, unlink} from 'node:fs/promises';
+import {mkdir, readFile, writeFile, rename, unlink, readdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {randomUUID, createHash} from 'node:crypto';
 import {LeadError, submissionIdPattern} from './lead-model.js';
@@ -38,7 +38,7 @@ export class LeadStore {
         if (existing.fingerprint !== fingerprint) throw new LeadError('This request changed. Please refresh the page and submit again.', 409);
         return {created: false, record: existing};
       }
-      const record = {id, createdAt: new Date().toISOString(), fingerprint, lead,
+      const record = {id, createdAt: new Date().toISOString(), retentionDays:180, fingerprint, lead,
         notification: {state: notify ? 'pending' : 'disabled', messageSid: null, events: []}};
       await this.write(record);
       return {created: true, record};
@@ -53,5 +53,29 @@ export class LeadStore {
       await this.write(record);
       return record;
     });
+  }
+  async delete(id) {
+    return this.locked(id.toLowerCase(), async () => {
+      try { await unlink(this.path(id)); return true; }
+      catch(error) { if(error.code === 'ENOENT') return false; throw error; }
+    });
+  }
+  async prune({now = Date.now(), days = 180} = {}) {
+    let files;
+    try { files = await readdir(this.directory); }
+    catch(error) { if(error.code === 'ENOENT') return 0; throw error; }
+    let removed = 0;
+    for (const file of files) {
+      const id = file.replace(/\.json$/, '');
+      if (!file.endsWith('.json') || !submissionIdPattern.test(id)) continue;
+      await this.locked(id, async () => {
+        const record = await this.read(id);
+        // Older records predate this policy and require an operator's retention review.
+        if (record?.retentionDays === 180 && Date.parse(record.createdAt) < now - days * 86400000) {
+          await unlink(this.path(id)); removed++;
+        }
+      });
+    }
+    return removed;
   }
 }

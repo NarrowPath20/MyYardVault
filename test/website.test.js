@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile, readdir} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import {createAppServer} from '../server.js';
-import {SIZES, SIZE_ORDER, SWATCHES, ST_FINISHES} from '../src/models/catalog.js';
+import {SIZES, SIZE_ORDER, SWATCHES, ST_FINISHES, SPECIAL_ORDER_FINISHES} from '../src/models/catalog.js';
 import {DATA as office} from '../src/models/office-use-cases.js';
 import {DATA as build} from '../src/models/build-walkthrough.js';
 import {KB} from '../src/models/chat-knowledge.js';
@@ -86,12 +86,15 @@ test('every URL renders only its own page with valid navigation and a shared foo
   }
 });
 
-test('product and content models retain the original catalog', () => {
+test('catalog retains products and separates stocked finishes from special orders', () => {
   assert.equal(SIZE_ORDER.length, 7);
   assert.ok(SIZE_ORDER.every(size => SIZES[size]?.img.startsWith('/assets/images/')));
   assert.equal(SIZES['10'].price, '$4,725');
-  assert.equal(SWATCHES.length, 9);
-  assert.equal(ST_FINISHES.length, 10);
+  assert.deepEqual(SWATCHES.map(finish=>finish.name), ['White Aluminum','Oyster White','Slate Grey']);
+  assert.deepEqual(ST_FINISHES, SWATCHES);
+  assert.equal(SWATCHES[2].code, 'RAL 7015');
+  assert.ok(SPECIAL_ORDER_FINISHES.length > 0);
+  assert.ok(SPECIAL_ORDER_FINISHES.every(finish=>!SWATCHES.some(stock=>stock.code===finish.c)));
   assert.equal(office.length, 6);
   assert.equal(build.length, 4);
   assert.ok(KB.length > 10);

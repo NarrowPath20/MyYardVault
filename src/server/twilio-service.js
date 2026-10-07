@@ -11,13 +11,8 @@ export function validateTwilioSignature(authToken, url, parameters, signature = 
 }
 
 export function notificationText(record) {
-  const lead = record.lead;
-  return [`My Yard Vault 4 Corners ${lead.type} request`, `Ref: ${record.id}`, `Name: ${lead.name}`,
-    lead.phone && `Phone: ${lead.phone}`, lead.email && `Email: ${lead.email}`,
-    lead.interest && `Interest: ${lead.interest}`, lead.finish && `Finish: ${lead.finish}`,
-    lead.location && `Location: ${lead.location}`, lead.preferredDate && `Visit: ${lead.preferredDate} ${lead.timeSlot}`,
-    lead.financingOption && `Financing: ${lead.financingOption}`,
-    lead.message && `Notes: ${lead.message}`].filter(Boolean).join('\n').slice(0, 1400);
+  return [`My Yard Vault 4 Corners ${record.lead.type} request`, `Ref: ${record.id}`,
+    'Review the private inquiry store for contact details.'].join('\n');
 }
 
 export async function notifyTeam(config, record, fetchImpl = fetch) {

@@ -11,7 +11,7 @@ import {validateLead} from '../src/server/lead-model.js';
 
 const accountSid = 'AC'+'1'.repeat(32), messageSid = 'SM'+'2'.repeat(32);
 const fakeToken = 'offline-test-token';
-const lead = overrides => ({submissionId:randomUUID(),type:'quote',name:'Test Customer',phone:'(505) 555-0100',email:'test@example.com',interest:'Storage unit',sourcePage:'/contact',...overrides});
+const lead = overrides => ({submissionId:randomUUID(),type:'quote',name:'Test Customer',phone:'(505) 555-0100',email:'test@example.com',interest:'Storage unit',sourcePage:'/contact',contactConsent:true,adultConfirmed:true,consentVersion:'2026-10-07',...overrides});
 
 async function setup(t, {enabled=false, fetchImpl, rateLimit=10}={}) {
   const directory = await mkdtemp(join(tmpdir(),'yardvault-leads-test-'));
@@ -49,7 +49,10 @@ test('Twilio alerts use server-configured recipient and sender and deduplicate c
     const parameters=new URLSearchParams(options.body);
     assert.equal(parameters.get('To'),'+15055550102');
     assert.equal(parameters.get('From'),'+15055550101');
-    assert.ok(parameters.get('Body').includes('Test Customer'));
+    assert.ok(parameters.get('Body').includes('Ref:'));
+    assert.ok(!parameters.get('Body').includes('Test Customer'));
+    assert.ok(!parameters.get('Body').includes('test@example.com'));
+    assert.ok(!parameters.get('Body').includes('505'));
     assert.ok(parameters.get('StatusCallback').startsWith('https://yardvault.example/api/twilio/status?leadId='));
     assert.ok(options.headers.Authorization.startsWith('Basic '));
     return new Response(JSON.stringify({sid:messageSid,status:'queued'}),{status:201});

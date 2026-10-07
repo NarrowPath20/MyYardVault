@@ -5,7 +5,7 @@ export function initLightbox() {
   if(!grid||!lb) return;
   var lbImg=lb.querySelector('.lb-img'), lbCap=lb.querySelector('.lb-cap');
   var list=[], idx=0, previousFocus, previousOverflow, background=[];
-  function visible(){ return Array.prototype.filter.call(grid.querySelectorAll('img'),
+  function visible(){ return Array.prototype.filter.call(grid.querySelectorAll('img.image-focus-trigger'),
     function(im){ return im.getClientRects().length && !im.closest('.hide, [hidden], [aria-hidden="true"]'); }); }
   function show(i){
     if(!list.length) return;
@@ -19,17 +19,18 @@ export function initLightbox() {
     previousFocus=document.activeElement; previousOverflow=document.body.style.overflow;
     background=Array.from(document.body.children).filter(el=>el!==lb).map(el=>[el,el.inert]);
     background.forEach(([el])=>{el.inert=true;});
-    lb.classList.add('open'); lb.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
-    lb.querySelector('.lb-close').focus(); }
-  function close(){ lb.classList.remove('open'); lb.setAttribute('aria-hidden','true'); document.body.style.overflow=previousOverflow;
-    background.forEach(([el,inert])=>{el.inert=inert;}); previousFocus?.focus(); }
+    lb.inert=false; lb.classList.add('open'); lb.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+    requestAnimationFrame(()=>{if(lb.classList.contains('open'))lb.querySelector('.lb-close').focus();}); }
+  function close(){ lb.classList.remove('open'); lb.setAttribute('aria-hidden','true'); lb.inert=true; document.body.style.overflow=previousOverflow;
+    background.forEach(([el,inert])=>{el.inert=inert;}); background=[]; previousFocus?.focus(); }
   grid.querySelectorAll('img').forEach(im=>{
+    if(im.closest('button,[role="button"]'))return;
     im.classList.add('image-focus-trigger'); im.tabIndex=0; im.setAttribute('role','button');
     im.setAttribute('aria-haspopup','dialog'); im.setAttribute('aria-label','View image: '+(im.alt||'Website photo'));
   });
   grid.addEventListener('click',function(e){
     var im=e.target.closest('img')||e.target.closest('#galGrid figure')?.querySelector('img');
-    if(im&&visible().includes(im)){e.preventDefault();e.stopPropagation();open(im);}
+    if(im&&visible().includes(im)){e.preventDefault();e.stopPropagation();im.focus({preventScroll:true});open(im);}
   },true);
   grid.addEventListener('keydown',function(e){
     if(e.target.matches('img')&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();open(e.target);}

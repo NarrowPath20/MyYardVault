@@ -1,3 +1,5 @@
+import {CONSENT_VERSION} from '../models/privacy.js';
+
 export class LeadError extends Error {
   constructor(message, status = 400) { super(message); this.status = status; }
 }
@@ -21,6 +23,8 @@ export function normalizePhone(value) {
 
 export function validateLead(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new LeadError('Please check your request.');
+  if (input.adultConfirmed !== true) throw new LeadError('These inquiry forms are for adults 18 and older. Do not submit children\'s information.');
+  if (input.contactConsent !== true || input.consentVersion !== CONSENT_VERSION) throw new LeadError('Please confirm permission to respond to your request and review the current privacy notice.');
   if (input.website) throw new LeadError('Unable to submit this request.');
   if (typeof input.submissionId !== 'string' || !submissionIdPattern.test(input.submissionId)) throw new LeadError('Please refresh the page and try again.');
   if (!['quote', 'showroom', 'financing', 'chat'].includes(input.type)) throw new LeadError('Please select a request type.');
@@ -30,7 +34,6 @@ export function validateLead(input) {
   const email = text(input.email, 'email', 254).toLowerCase();
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) throw new LeadError('Please enter a valid email address.');
   if (!phone && !email) throw new LeadError('Please provide a phone number or email address so we can reach you.');
-  if (['showroom', 'financing', 'chat'].includes(input.type) && !phone) throw new LeadError('Please provide a phone number.');
   const preferredDate = text(input.preferredDate, 'date', 10);
   if (preferredDate && (!/^\d{4}-\d{2}-\d{2}$/.test(preferredDate) || Number.isNaN(Date.parse(preferredDate)) || new Date(preferredDate).toISOString().slice(0,10) !== preferredDate)) throw new LeadError('Please choose a valid visit date.');
   const timeSlot = text(input.timeSlot, 'time', 40);
@@ -39,6 +42,7 @@ export function validateLead(input) {
   if (sourcePage && (!sourcePage.startsWith('/') || /[?#\r\n]/.test(sourcePage))) throw new LeadError('Please refresh the page and try again.');
   return {
     type: input.type, name, phone, email,
+    consent: {contact:true, adultConfirmed:true, version:CONSENT_VERSION},
     interest: text(input.interest, 'interest', 150),
     finish: text(input.finish, 'finish', 80),
     message: text(input.message, 'message', 2000),

@@ -5,6 +5,7 @@ import {initAgentPortal} from '/controllers/agent-portal-controller.js';
 import {initPaymentEstimator} from '/controllers/payment-estimator-controller.js';
 import {initChat} from '/controllers/chat-controller.js';
 import {LEGACY_PATHS} from '/models/pages.js';
+import {initPrivacy} from '/controllers/privacy-controller.js';
 import {initLightbox} from '/controllers/lightbox-controller.js';
 
 const legacy = LEGACY_PATHS[location.hash.slice(1)];
@@ -12,6 +13,7 @@ if (location.pathname === '/' && legacy && legacy !== '/') {
   location.replace(legacy + location.search);
 } else {
   const page = document.body.dataset.page;
+  initPrivacy();
   const scene = {setVaultColor() {}, setScene() {}};
   initSite(scene);
   initRouter();
@@ -29,7 +31,6 @@ if (location.pathname === '/' && legacy && legacy !== '/') {
     await initialize('storage-gallery', 'initStorageGallery');
   } else if (page === 'office') {
     await initialize('office-use-cases', 'initOfficeUseCases');
-    await initialize('office-weather', 'initOfficeWeather');
   } else if (page === 'kiosk') {
     await initialize('kiosk-gallery', 'initKioskGallery');
   } else if (page === 'multi') {

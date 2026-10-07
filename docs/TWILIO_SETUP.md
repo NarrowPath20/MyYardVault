@@ -2,7 +2,7 @@
 
 Quote requests, showroom requests, financing inquiries, and chat requests now submit to `POST /api/leads`. The server validates the fields, saves a private record, and returns a receipt. The browser shows success only after the server accepts the request.
 
-The initial Twilio integration sends **internal sales-team lead alerts**. Customer follow-up texting can be added once the client's desired workflow is established. The customer's phone number is never used as the SMS destination by this implementation.
+The initial Twilio integration sends **internal sales-team lead alerts** containing only the request type and reference. Customer names, phone numbers, email addresses, locations, and messages stay in the private inquiry store and are not included in alerts. Customer follow-up texting requires a separately reviewed workflow and appropriate permission; this integration never texts the customer.
 
 ## Try it before the account exists
 

@@ -6,15 +6,21 @@ import {showWebsite} from './src/controllers/page-controller.js';
 import {pageForPath} from './src/models/pages.js';
 import {leadConfig} from './src/server/lead-config.js';
 import {createLeadApi} from './src/server/lead-api.js';
+import {LeadStore} from './src/server/lead-store.js';
 
 const root = fileURLToPath(new URL('./', import.meta.url));
 const types = {'.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
-  '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.gif': 'image/gif'};
+  '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.gif': 'image/gif',
+  '.ttf':'font/ttf', '.woff2':'font/woff2', '.txt':'text/plain; charset=utf-8'};
 
 export function createAppServer({leadOptions = {}} = {}) {
   const config = leadOptions.config || leadConfig();
-  const handleLeadRequest = createLeadApi(config, leadOptions);
-  return createServer(async (request, response) => {
+  const store = leadOptions.store || new LeadStore(config.directory);
+  const handleLeadRequest = createLeadApi(config, {...leadOptions, store});
+  const cleanup = () => store.prune().catch(() => console.error('Inquiry retention cleanup failed. Review private storage permissions.'));
+  const server = createServer(async (request, response) => {
+    response.setHeader('Referrer-Policy','strict-origin-when-cross-origin');
+    response.setHeader('X-Content-Type-Options','nosniff');
     try {
       const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
       if (await handleLeadRequest(request, response, pathname)) return;
@@ -45,6 +51,10 @@ export function createAppServer({leadOptions = {}} = {}) {
       response.end(missing ? 'Not found' : 'Unable to serve request');
     }
   });
+  let retentionTimer;
+  server.on('listening', () => { cleanup(); retentionTimer = setInterval(cleanup, 86400000); retentionTimer.unref(); });
+  server.on('close', () => clearInterval(retentionTimer));
+  return server;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

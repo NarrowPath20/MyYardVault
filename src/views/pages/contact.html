@@ -27,7 +27,7 @@
             <figcaption>Our mobile showroom &middot; delivered to your driveway</figcaption>
           </figure>
           <div class="start-steps">
-            <div class="ministep"><span class="sn">1</span><div><b>Pick a day &amp; time</b><p>Anywhere in the Four Corners — mornings through evenings.</p></div></div>
+            <div class="ministep"><span class="sn">1</span><div><b>Pick a day &amp; time</b><p>Anywhere in the Four Corners, mornings through evenings.</p></div></div>
             <div class="ministep"><span class="sn">2</span><div><b>We roll a real vault to you</b><p>See it, open it, measure your space. Zero pressure.</p></div></div>
             <div class="ministep"><span class="sn">3</span><div><b>Decide &amp; build</b><p>Pick your size and finish; we build it on your land in about an hour.</p></div></div>
           </div>
@@ -36,12 +36,12 @@
           <div class="lead-trap" aria-hidden="true"><label for="showroomFormWebsite">Leave this blank</label><input id="showroomFormWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
           <h3 style="font-size:22px;margin-bottom:20px">Book your visit</h3>
           <div class="fld-row">
-            <div class="fld"><label for="vName">Name</label><input type="text" id="vName" placeholder="Your name" required></div>
-            <div class="fld"><label for="vPhone">Phone</label><input type="tel" id="vPhone" placeholder="(505) 000-0000" required></div>
+            <div class="fld"><label for="vName">Name</label><input type="text" id="vName" placeholder="Your name" required maxlength="100"></div>
+            <div class="fld"><label for="vPhone">Phone</label><input type="tel" maxlength="40" autocomplete="tel" id="vPhone" placeholder="(505) 000-0000" required></div>
           </div>
           <div class="fld-row">
-            <div class="fld"><label for="sDate">Preferred date</label><input type="date" id="sDate"></div>
-            <div class="fld"><label for="vZip">City or ZIP</label><input type="text" id="vZip" placeholder="Where should we come?"></div>
+            <div class="fld"><label for="sDate">Preferred date (optional)</label><input type="date" id="sDate"></div>
+            <div class="fld"><label for="vZip">City or ZIP (optional)</label><input type="text" id="vZip" placeholder="Where should we come?"></div>
           </div>
           <div class="fld"><label>Time of day</label>
             <div class="slots" id="slots">
@@ -52,7 +52,8 @@
             </div>
           </div>
           <div class="fld"><label for="vSize">Unit you want to see</label><select id="vSize">
-            <option>Storage vault</option><option>Kiosk unit</option><option>Office unit</option><option>Multi-compartment</option><option>Not sure — show me options</option></select></div>
+            <option>Storage vault</option><option>Kiosk unit</option><option>Office unit</option><option>Multi-compartment</option><option>Not sure, show me options</option></select></div>
+          {{> partials/lead-consent}}
           <button type="submit" class="btn btn-primary">Request my visit
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
           <p class="form-note">We confirm your slot by phone &middot; serving the Four Corners</p>
@@ -65,10 +66,10 @@
     <div class="panel" id="panel-quote" hidden>
       <div class="start-grid">
         <div class="start-left">
-          <h3 style="font-size:26px;margin-bottom:14px">A price, usually same day.</h3>
-          <p style="color:var(--mist)">Tell us the size and finish you're after and we'll send a quote — no obligation. Not sure yet? Say so and we'll help you figure it out, or switch over and book a showroom visit instead.</p>
+          <h3 style="font-size:26px;margin-bottom:14px">Request a written, itemized quote.</h3>
+          <p style="color:var(--mist)">Tell us the size and finish you're after and we'll send a quote, no obligation. White Aluminum, Oyster White, and Slate Grey (RAL 7015) are our stocked vault finishes. All other colors require special order and can cause substantial delivery delays. Ask us to confirm inventory or the special-order lead time with your quote.</p>
           <div class="start-contact" style="margin-top:28px">
-            <a href="tel:15176982858"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.5-1.2a2 2 0 0 1 2.1-.4c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2z"/></svg> 1-517-MY-VAULT</a>
+            <a href="tel:+15058795331"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.5-1.2a2 2 0 0 1 2.1-.4c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2z"/></svg> 505-879-5331</a>
             <a href="mailto:info@myyardvault.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg> info@myyardvault.com</a>
             <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> the Four Corners &amp; Southwest</span>
           </div>
@@ -77,25 +78,24 @@
           <div class="lead-trap" aria-hidden="true"><label for="quoteFormWebsite">Leave this blank</label><input id="quoteFormWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
           <h3 style="font-size:22px;margin-bottom:20px">Get your quote</h3>
           <div class="fld-row">
-            <div class="fld"><label for="qName">Name</label><input type="text" id="qName" placeholder="Your name" required></div>
-            <div class="fld"><label for="qPhone">Phone</label><input type="tel" id="qPhone" placeholder="(505) 000-0000"></div>
+            <div class="fld"><label for="qName">Name</label><input type="text" id="qName" placeholder="Your name" required maxlength="100"></div>
+            <div class="fld"><label for="qPhone">Phone (optional if email supplied)</label><input type="tel" maxlength="40" autocomplete="tel" id="qPhone" placeholder="(505) 000-0000"></div>
           </div>
-          <div class="fld"><label for="qEmail">Email</label><input type="email" id="qEmail" placeholder="you@email.com"></div>
+          <div class="fld"><label for="qEmail">Email (optional if phone supplied)</label><input type="email" id="qEmail" placeholder="you@email.com"></div>
           <div class="fld-row">
             <div class="fld"><label for="qSize">Size</label><select id="qSize">
               <option>3.5&prime; Vault</option><option>5&prime; Vault</option><option>7&prime; Vault</option>
               <option selected>10&prime; Vault</option><option>13&prime; Vault</option><option>16&prime; Vault</option>
               <option>19&prime; Vault</option><option>Kiosk unit</option><option>Office unit</option><option>Multi-compartment</option>
               <option>Not sure yet</option></select></div>
-            <div class="fld"><label for="qColor">Finish</label><select id="qColor">
-              <option>Galvanized</option><option>Slate grey</option><option>Jet black</option><option>Traffic red</option>
-              <option>Gentian blue</option><option>Moss green</option><option>Signal yellow</option><option>Oyster white</option>
-              <option>My Yard Vault 4 Corners violet</option></select></div>
+            <div class="fld"><label for="qColor">Finish</label><select id="qColor" aria-describedby="qFinishNotice"></select>
+              <p id="qFinishNotice" class="finish-form-notice">Special-order colors can cause substantial delivery delays. Confirm lead time with your quote.</p></div>
           </div>
           <div class="fld"><label for="qMsg">Anything else?</label><textarea id="qMsg" placeholder="Your yard, access, and what's going inside…"></textarea></div>
+          {{> partials/lead-consent}}
           <button type="submit" class="btn btn-primary">Send my quote request
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-          <p class="form-note">Provide a phone number or email so we can respond &middot; or call 1-517-MY-VAULT</p>
+          <p class="form-note">Provide a phone number or email so we can respond &middot; or call 505-879-5331</p>
           <p class="lead-status" role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -104,12 +104,8 @@
     <!-- FINANCING -->
     <div class="panel" id="panel-financing" hidden>
       <div class="fin-block">
-        <h3 style="font-size:clamp(26px,3.4vw,40px)">Own it in months, not years.</h3>
-        <p>Flexible financing through our partners — including lease-to-own and no-credit-needed options. Apply in minutes and start building.</p>
-        <div class="fin-logos2">
-          <div class="fl"><b>Synchrony</b><span>Financing &amp; credit</span></div>
-          <div class="fl"><b>Acima</b><span>Lease-to-own &middot; no credit needed</span></div>
-        </div>
+        <h3 style="font-size:clamp(26px,3.4vw,40px)">Discuss payment options.</h3>
+        <p>Ask our team about current payment options. Availability, eligibility, rates, and any provider relationship must be confirmed before you apply.</p>
         <div class="est" id="finEst">
           <div class="est-top"><label>Estimated project total</label><span class="est-price" id="estPrice">$6,500</span></div>
           <input type="range" id="estRange" min="1500" max="20000" step="100" value="6500" aria-label="Estimated project total">
@@ -120,19 +116,20 @@
             <button type="button" data-m="48">48 mo</button>
           </div>
           <div class="est-out"><b id="estMo">$271</b><span>/ month &middot; <span id="estTermLbl">24</span> months</span></div>
-          <p class="est-fine">Simple estimate: total &divide; months. Your actual rate, term, and approval are set by Synchrony or Acima &mdash; this is a ballpark, not an offer.</p>
+          <p class="est-fine">Illustration only: project amount divided by months, with no interest or fees included. This is not a loan payment calculation or offer. Actual payments may include interest, provider fees, delivery, installation, and taxes. Confirm the full cost and provider terms in writing.</p>
         </div>
         <form class="finform" id="finForm">
           <div class="lead-trap" aria-hidden="true"><label for="finFormWebsite">Leave this blank</label><input id="finFormWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
           <div class="fld-row">
-            <div class="fld"><label for="fName">Name</label><input type="text" id="fName" placeholder="Your name" required></div>
-            <div class="fld"><label for="fPhone">Phone</label><input type="tel" id="fPhone" placeholder="(505) 000-0000" required></div>
+            <div class="fld"><label for="fName">Name</label><input type="text" id="fName" placeholder="Your name" required maxlength="100"></div>
+            <div class="fld"><label for="fPhone">Phone</label><input type="tel" maxlength="40" autocomplete="tel" id="fPhone" placeholder="(505) 000-0000" required></div>
           </div>
           <div class="fld"><label for="fType">Which option?</label><select id="fType">
-            <option>Synchrony — financing &amp; credit</option><option>Acima — lease-to-own, no credit</option><option>Not sure — help me choose</option></select></div>
+            <option>Financing information</option><option>Lease-to-own information</option><option>Not sure, help me choose</option></select></div>
+          {{> partials/lead-consent}}
           <button type="submit" class="btn btn-primary">Request financing information
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-          <p class="form-note">We'll reach out to walk you through approval &middot; serving the Four Corners</p>
+          <p class="form-note">We'll respond to your information request &middot; serving the Four Corners</p>
           <p class="lead-status" role="status" aria-live="polite"></p>
         </form>
       </div>
