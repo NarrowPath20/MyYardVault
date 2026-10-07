@@ -2,6 +2,9 @@
 export function createLeadSubmitter() {
   let previousPayload, submissionId;
   return async function submitLead(lead) {
+    if (document.body.dataset.hosting === 'static') {
+      throw new Error('Online requests are unavailable on this site. Please contact us by phone or email to request a quote, financing, or a showroom visit.');
+    }
     const payload = JSON.stringify({...lead, sourcePage: location.pathname});
     if (payload !== previousPayload) { previousPayload = payload; submissionId = crypto.randomUUID(); }
     const response = await fetch('/api/leads', {

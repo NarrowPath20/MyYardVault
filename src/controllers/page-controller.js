@@ -3,7 +3,7 @@ import {PAGES, POLICY_PAGES} from '../models/pages.js';
 
 const escapeHtml = value => value.replace(/[&<>"']/g, character => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[character]));
 
-export function showWebsite(request, response, key = 'home') {
+export function renderWebsite(key = 'home') {
   const page = PAGES[key];
   const standalone = [...POLICY_PAGES, 'build', 'sizes', 'gallery', 'contact'].includes(key);
   const legalName = process.env.BUSINESS_LEGAL_NAME?.trim();
@@ -22,6 +22,10 @@ export function showWebsite(request, response, key = 'home') {
     quoteDisclosure:POLICY_PAGES.includes(key) ? '' : renderView('partials/quote-disclosure'),
     pageScripts: key === 'home' ? '<script src="/assets/vendor/three.min.js"></script>' : ''
   };
+  return renderView('layout', data);
+}
+
+export function showWebsite(request, response, key = 'home') {
   response.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
-  response.end(request.method === 'HEAD' ? undefined : renderView('layout', data));
+  response.end(request.method === 'HEAD' ? undefined : renderWebsite(key));
 }

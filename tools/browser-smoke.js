@@ -103,6 +103,15 @@ try {
   await check('home separates special-order colors and delivery warning', "document.querySelectorAll('.stock-finish-grid .chip').length===3 && document.querySelectorAll('.special-finish-grid .chip').length>0 && document.querySelector('.finish-special').textContent.includes('substantial delivery delays')");
   await evaluate("const motion=document.getElementById('pauseMotion');if(!motion.hidden && motion.getAttribute('aria-pressed')!=='true')motion.click()");
   await check('viewer motion can be paused or unavailable viewer controls are hidden', "(document.getElementById('pauseMotion').hidden && getComputedStyle(document.getElementById('heroFallback')).opacity==='1') || document.getElementById('pauseMotion').getAttribute('aria-pressed')==='true'");
+  await evaluate("document.querySelector('.use-card img').focus(); document.querySelector('.use-card img').click()");
+  await check('linked homepage image opens focused viewer without navigating', "location.pathname==='/' && document.getElementById('lightbox').classList.contains('open') && document.querySelector('.lb-img').src===document.querySelector('.use-card img').src && document.activeElement.matches('.lb-close') && document.getElementById('main-content').inert");
+  await check('focused image has an eighty percent black backdrop', "getComputedStyle(document.getElementById('lightbox')).backgroundColor==='rgba(0, 0, 0, 0.8)'");
+  await evaluate("window.__focusedImage=document.querySelector('.lb-img').src; document.querySelector('.lb-next').click()");
+  await check('next image control advances', "document.querySelector('.lb-img').src!==window.__focusedImage");
+  await evaluate("document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft'}))");
+  await check('left arrow returns to previous image', "document.querySelector('.lb-img').src===window.__focusedImage");
+  await evaluate("document.querySelector('.lb-close').click()");
+  await check('close restores homepage interaction and image focus', "!document.getElementById('lightbox').classList.contains('open') && !document.getElementById('main-content').inert && document.activeElement===document.querySelector('.use-card img') && document.body.style.overflow!== 'hidden'");
   await evaluate("document.getElementById('burger').click()");
   await check('submenus start collapsed', "document.getElementById('menu-products').hidden && document.getElementById('menu-solutions').hidden");
   await evaluate("document.querySelector('[aria-controls=\"menu-products\"]').click();document.querySelector('[aria-controls=\"menu-solutions\"]').click()");
@@ -192,7 +201,7 @@ try {
   await check('lightbox moves focus and makes background inert', "document.activeElement.classList.contains('lb-close') && document.getElementById('main-content').inert");
   await evaluate("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");
   await check('gallery lightbox closes', "!document.getElementById('lightbox').classList.contains('open')");
-  await check('lightbox restores keyboard focus', "document.activeElement.matches('#galGrid figure') && !document.getElementById('main-content').inert && document.getElementById('lightbox').inert");
+  await check('lightbox restores keyboard focus', "document.activeElement.matches('#galGrid figure img') && !document.getElementById('main-content').inert && document.getElementById('lightbox').inert");
   await send('Page.navigate',{url:base+'/#storage'});
   await ready('/storage');
   checks.push('legacy hash bookmark redirects to real storage URL');
@@ -200,6 +209,8 @@ try {
   await new Promise(resolve=>setTimeout(resolve,200));
   await ready('/storage');
   checks.push('product URL survives reload');
+  await evaluate("document.querySelectorAll('#stGalThumbs .st-gt img')[1].click()");
+  await check('gallery thumbnail image selects its photo without opening the viewer', "document.querySelectorAll('#stGalThumbs .st-gt')[1].classList.contains('active') && document.getElementById('stGalImg').src===document.querySelectorAll('#stGalThumbs .st-gt img')[1].src && !document.getElementById('lightbox').classList.contains('open') && !document.querySelector('#stGalThumbs img').hasAttribute('tabindex')");
   await check('storage uses the same three stocked finishes and accurate swatch colors', "JSON.stringify([...document.querySelectorAll('#stSwatches button')].map(b=>b.dataset.name))===JSON.stringify(['White Aluminum','Oyster White','Slate Grey']) && document.querySelectorAll('#stSwatches button')[1].style.backgroundColor==='rgb(227, 217, 198)'");
   await navigate('/sizes');
   await check('sizes separates stocked and special-order finishes', "JSON.stringify([...document.querySelectorAll('.stock-finish-grid .meta b')].map(b=>b.textContent))===JSON.stringify(['White Aluminum','Oyster White','Slate Grey']) && [...document.querySelectorAll('.special-finish-grid .meta')].every(e=>e.textContent.includes('Special order')) && document.querySelector('.finish-special').textContent.includes('substantial delivery delays')");

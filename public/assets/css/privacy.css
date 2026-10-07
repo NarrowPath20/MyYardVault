@@ -30,7 +30,7 @@ body:has(#cookieBanner:not([hidden])) :is(#yvChatFab,#yvChat) { display:none; }
 :root[data-theme="light"] { --highlight:#275B60; }
 .swatch.active { border-color:var(--text); outline:2px solid var(--background); }
 .yc-m.user { background:var(--primary); color:#fff; }
-.lb { transition:opacity .18s; background:var(--background); }
+.lb { transition:opacity .18s; background:rgba(0,0,0,.8); }
 .lb-btn:hover { background:var(--support); color:var(--text); }
 .lb-btn { transition:background-color .18s,border-color .18s; }
 .cv-stat a { text-decoration:underline; text-underline-offset:3px; }
